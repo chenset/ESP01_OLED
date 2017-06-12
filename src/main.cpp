@@ -260,43 +260,39 @@ void setup() {
 }
 
 void loop() {
+  bool delayFlag = true;
   // OTA
   ArduinoOTA.handle();
   DHTServerResponse();
 
   // OLED refresh
-  if (millis() - timeSinceLastClock >= 1000) {
-  // delay(1000);
-    OLEDDisplayCtl();
-    timeSinceLastClock = millis();
-  }
+  // if (millis() - timeSinceLastClock >= 1000) {
+  OLEDDisplayCtl();
+    // timeSinceLastClock = millis();
+  // }
 
   // juhe weather API
   if (millis() - timeSinceLastWeatherAPI >= 3600000) {
     weatherUpdate();
     timeSinceLastWeatherAPI = millis();
+    delayFlag = false;
   }
 
-  if (millis() - timeSinceLastWEB >= 12345) {
+  if (millis() - timeSinceLastWEB >= 32345) {
     webBenchmark();
     timeSinceLastWEB = millis();
+    delayFlag = false;
   }
 
-  if (millis() - timeSinceLastPing >= 5579) {
+  if (millis() - timeSinceLastPing >= 15579) {
     icmpPing();
     timeSinceLastPing = millis();
+    delayFlag = false;
   }
 
-  // Use WiFiClient class to create TCP connections
-  // if (millis() - timeSinceLastHttpRequest > 900000) {
-    // DHTSenserPost();
-    // timeSinceLastHttpRequest = millis();
-  // }
-
-  // if (millis() - timeDisplay2LastClock > 10000) {
-    // OLEDDisplay2Ctl();
-    // timeDisplay2LastClock = millis();
-  // }
+  if(delayFlag){
+    delay(1000);
+  }
 }
 
 // void OLEDDisplay2Ctl() {
@@ -375,7 +371,7 @@ void OLEDDisplayCtl() {
   display.drawString(105, 20, webBenchmarkStr);
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
   display.setFont(Roboto_10);
-  display.drawString(128, 23, webBenchmarkHTTPCodeStr);
+  display.drawString(128, 24, webBenchmarkHTTPCodeStr);
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
   display.setFont(Roboto_10);
   display.drawString(128, 33, "ms");
