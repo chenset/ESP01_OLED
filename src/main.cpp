@@ -294,7 +294,7 @@ void loop() {
     delayFlag = false;
   }
 
-  if(pingTimeStr == failString || webBenchmarkHTTPCodeStr == failString){
+  if(WiFi.isConnected() && (pingTimeStr == failString || webBenchmarkHTTPCodeStr == failString)){
     OLEDBlink();
   }
 
