@@ -65,6 +65,9 @@ String pingTimeStr = "-";
 void icmpPing();
 
 
+//request fail string
+String failString = "ERR";
+
 
 // DHT sensor settings
 // #define DHTPIN 5     // what digital pin we're connected to
@@ -170,6 +173,7 @@ void DHTServerResponse();
 void sendNTPpacket(IPAddress &address);
 String getSensorsJson();
 time_t getNtpTime();
+void OLEDBlink();
 
 // NTP var
 const int NTP_PACKET_SIZE = 48; // NTP time is in the first 48 bytes of message
@@ -290,9 +294,27 @@ void loop() {
     delayFlag = false;
   }
 
+  if(pingTimeStr == failString || webBenchmarkHTTPCodeStr == failString){
+    OLEDBlink();
+  }
+
   if(delayFlag){
     delay(1000);
   }
+}
+
+void OLEDBlink(){
+      display.displayOff();
+      delay(200);
+      display.displayOn();
+      delay(200);
+      display.displayOff();
+      delay(200);
+      display.displayOn();
+      delay(200);
+      display.displayOff();
+      delay(200);
+      display.displayOn();
 }
 
 // void OLEDDisplay2Ctl() {
@@ -333,7 +355,7 @@ void icmpPing(){
       if(ret){
          pingTimeStr = (String)Ping.averageTime();
       }else{
-         pingTimeStr = "ERR";
+         pingTimeStr = failString;
       }
 }
 
@@ -468,7 +490,7 @@ void webBenchmark() {
   if(httpCode > 0) {
     webBenchmarkHTTPCodeStr = (String)httpCode;
   } else {
-    webBenchmarkHTTPCodeStr = "ERR";
+    webBenchmarkHTTPCodeStr = failString;
   }
 
   webBenchmarkStr = (String) (millis() - start - fix);
