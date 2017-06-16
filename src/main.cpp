@@ -282,13 +282,13 @@ void loop() {
     delayFlag = false;
   }
 
-  if (millis() - timeSinceLastWEB >= 32345) {
+  if (millis() - timeSinceLastWEB >= 12345) {
     webBenchmark();
     timeSinceLastWEB = millis();
     delayFlag = false;
   }
 
-  if (millis() - timeSinceLastPing >= 15579) {
+  if (millis() - timeSinceLastPing >= 5579) {
     icmpPing();
     timeSinceLastPing = millis();
     delayFlag = false;
@@ -487,13 +487,15 @@ void webBenchmark() {
   unsigned long start =  millis();
   int httpCode = http.GET();
 
+  webBenchmarkStr = (String) (millis() - start - fix);
   if(httpCode > 0) {
     webBenchmarkHTTPCodeStr = (String)httpCode;
   } else {
     webBenchmarkHTTPCodeStr = failString;
+    webBenchmarkStr = failString;
   }
 
-  webBenchmarkStr = (String) (millis() - start - fix);
+
   http.end();
 }
 
