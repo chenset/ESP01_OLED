@@ -157,7 +157,7 @@ unsigned long timeSinceLastClock = 0;
 // unsigned long timeDisplay2LastClock = 0;
 unsigned long timeSinceLastDHT = 0;
 unsigned long timeSinceLastWEB = 0;
-unsigned long timeSinceLastWeatherAPI = 0;
+// unsigned long timeSinceLastWeatherAPI = 0;
 unsigned long timeSinceLastPing = 0;
 
 // DHT variables
@@ -168,7 +168,7 @@ void OLEDDisplayCtl();
 // void OLEDDisplay2Ctl();
 void DHTSenserPost();
 // void DHTSenserUpdate();
-void weatherUpdate();
+// void weatherUpdate();
 void DHTServerResponse();
 void sendNTPpacket(IPAddress &address);
 String getSensorsJson();
@@ -260,7 +260,7 @@ void setup() {
   // dht.begin();
 
   // weather update
-  weatherUpdate();
+  // weatherUpdate();
 }
 
 void loop() {
@@ -276,11 +276,11 @@ void loop() {
   // }
 
   // juhe weather API
-  if (millis() - timeSinceLastWeatherAPI >= 3600000) {
-    weatherUpdate();
-    timeSinceLastWeatherAPI = millis();
-    delayFlag = false;
-  }
+  // if (millis() - timeSinceLastWeatherAPI >= 3600000) {
+    // weatherUpdate();
+    // timeSinceLastWeatherAPI = millis();
+    // delayFlag = false;
+  // }
 
   if (millis() - timeSinceLastWEB >= 12345) {
     webBenchmark();
@@ -538,65 +538,65 @@ void DHTServerResponse() {
   Serial.println("Client disonnected");
 }
 
-void weatherUpdate() {
-  HTTPClient http;
-
-  http.begin("http://op.juhe.cn/onebox/weather/"
-             "query?cityname=深圳&key="
-             "c43f962eb0631105e8598b26c6de9659"); // HTTP
-
-  // start connection and send HTTP header
-  int httpCode = http.GET();
-
-  // httpCode will be negative on error
-  if (httpCode == 200) {
-    // HTTP header has been send and Server response header has been handled
-    Serial.printf("[HTTP] GET... code: %d\n", httpCode);
-
-    // file found at server
-    if (httpCode == HTTP_CODE_OK) {
-      String payload = http.getString();
-      int imgIndex = payload.indexOf("img");
-      // imgIndex = -1 ; error handle
-      if (imgIndex != -1) {
-        weatherImg = payload.substring(imgIndex + 6, imgIndex + 8).toInt();
-        Serial.println("weatherImg: ");
-        Serial.println(weatherImg);
-      }
-
-      int temperatureIndex = payload.indexOf("temperature");
-      if (temperatureIndex != -1) {
-        temperatureOnline =
-            payload.substring(temperatureIndex + 14, temperatureIndex + 14 + 2)
-                .toInt();
-        Serial.println("temperature: ");
-        Serial.println(temperatureOnline);
-      }
-
-      int humidityIndex = payload.indexOf("humidity");
-      if (humidityIndex != -1) {
-        humidityOnline =
-            payload.substring(humidityIndex + 11, humidityIndex + 11 + 2)
-                .toInt();
-        Serial.println("humidity: ");
-        Serial.println(humidityOnline);
-      }
-
-      int pm25Index = payload.indexOf("pm25\":\"");
-      if (pm25Index != -1) {
-        pm25Online =
-            payload.substring(pm25Index + 7, pm25Index + 7 + 3).toInt();
-        Serial.println("pm25: ");
-        Serial.println(pm25Online);
-      }
-    }
-  } else {
-    Serial.printf("[HTTP] GET... failed, error: %s\n",
-                  http.errorToString(httpCode).c_str());
-  }
-
-  http.end();
-}
+// void weatherUpdate() {
+//   HTTPClient http;
+//
+//   http.begin("http://op.juhe.cn/onebox/weather/"
+//              "query?cityname=深圳&key="
+//              "c43f962eb0631105e8598b26c6de9659"); // HTTP
+//
+//   // start connection and send HTTP header
+//   int httpCode = http.GET();
+//
+//   // httpCode will be negative on error
+//   if (httpCode == 200) {
+//     // HTTP header has been send and Server response header has been handled
+//     Serial.printf("[HTTP] GET... code: %d\n", httpCode);
+//
+//     // file found at server
+//     if (httpCode == HTTP_CODE_OK) {
+//       String payload = http.getString();
+//       int imgIndex = payload.indexOf("img");
+//       // imgIndex = -1 ; error handle
+//       if (imgIndex != -1) {
+//         weatherImg = payload.substring(imgIndex + 6, imgIndex + 8).toInt();
+//         Serial.println("weatherImg: ");
+//         Serial.println(weatherImg);
+//       }
+//
+//       int temperatureIndex = payload.indexOf("temperature");
+//       if (temperatureIndex != -1) {
+//         temperatureOnline =
+//             payload.substring(temperatureIndex + 14, temperatureIndex + 14 + 2)
+//                 .toInt();
+//         Serial.println("temperature: ");
+//         Serial.println(temperatureOnline);
+//       }
+//
+//       int humidityIndex = payload.indexOf("humidity");
+//       if (humidityIndex != -1) {
+//         humidityOnline =
+//             payload.substring(humidityIndex + 11, humidityIndex + 11 + 2)
+//                 .toInt();
+//         Serial.println("humidity: ");
+//         Serial.println(humidityOnline);
+//       }
+//
+//       int pm25Index = payload.indexOf("pm25\":\"");
+//       if (pm25Index != -1) {
+//         pm25Online =
+//             payload.substring(pm25Index + 7, pm25Index + 7 + 3).toInt();
+//         Serial.println("pm25: ");
+//         Serial.println(pm25Online);
+//       }
+//     }
+//   } else {
+//     Serial.printf("[HTTP] GET... failed, error: %s\n",
+//                   http.errorToString(httpCode).c_str());
+//   }
+//
+//   http.end();
+// }
 
 // void DHTSenserUpdate() {
 //   double localHumidity = dht.readHumidity();
