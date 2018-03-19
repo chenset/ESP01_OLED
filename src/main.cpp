@@ -43,7 +43,7 @@ const char *host = chipName.c_str();
 const char *ntpServerName = "1.asia.pool.ntp.org";
 
 // init DHT WEB Server
-WiFiServer DHTServer(80);
+// WiFiServer DHTServer(80);
 
 // UDP for ntp server
 WiFiUDP Udp;
@@ -57,6 +57,7 @@ const char* webBenchmarkUrl = envWebBenchmarkUrl;
 const char* webBenchmarkFingerprint = envWebBenchmarkFingerprint;
 String webBenchmarkHTTPCodeStr = "-";
 String webBenchmarkStr = "-";
+String webBenchmarkTimeStr = "-";
 void webBenchmark();
 
 //icmp ping
@@ -166,12 +167,12 @@ float temperature = 0.00;
 
 void OLEDDisplayCtl();
 // void OLEDDisplay2Ctl();
-void DHTSenserPost();
+// void DHTSenserPost();
 // void DHTSenserUpdate();
 // void weatherUpdate();
-void DHTServerResponse();
+// void DHTServerResponse();
 void sendNTPpacket(IPAddress &address);
-String getSensorsJson();
+// String getSensorsJson();
 time_t getNtpTime();
 void OLEDBlink();
 
@@ -252,10 +253,10 @@ void setup() {
   // Serial.println(Udp.localPort());
   // Serial.println("waiting for sync");
   setSyncProvider(getNtpTime);
-  setSyncInterval(600);
+  setSyncInterval(86400);
 
   // DHT WEB Server begin
-  DHTServer.begin();
+  // DHTServer.begin();
   // DHT
   // dht.begin();
 
@@ -267,7 +268,7 @@ void loop() {
   bool delayFlag = true;
   // OTA
   ArduinoOTA.handle();
-  DHTServerResponse();
+  // DHTServerResponse();
 
   // OLED refresh
   // if (millis() - timeSinceLastClock >= 1000) {
@@ -288,11 +289,11 @@ void loop() {
     delayFlag = false;
   }
 
-  if (millis() - timeSinceLastPing >= 5579) {
-    icmpPing();
-    timeSinceLastPing = millis();
-    delayFlag = false;
-  }
+  // if (millis() - timeSinceLastPing >= 5579) {
+    // icmpPing();
+    // timeSinceLastPing = millis();
+    // delayFlag = false;
+  // }
 
   if(WiFi.isConnected() && (pingTimeStr == failString && webBenchmarkHTTPCodeStr == failString)){
     OLEDBlink();
@@ -350,14 +351,14 @@ void OLEDBlink(){
 //   display2.display();
 // }
 
-void icmpPing(){
-      bool ret = Ping.ping(icmpPingDomain, 1);
-      if(ret){
-         pingTimeStr = (String)Ping.averageTime();
-      }else{
-         pingTimeStr = failString;
-      }
-}
+// void icmpPing(){
+//       bool ret = Ping.ping(icmpPingDomain, 1);
+//       if(ret){
+//          pingTimeStr = (String)Ping.averageTime();
+//       }else{
+//          pingTimeStr = failString;
+//       }
+// }
 
 void OLEDDisplayCtl() {
 
@@ -381,7 +382,8 @@ void OLEDDisplayCtl() {
   // weather API weather
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(Roboto_14);
-  display.drawString(26, 3, (String)temperatureOnline + "-" + (String)humidityOnline + "-" + (String)pm25Online);
+  // display.drawString(26, 3, (String)temperatureOnline + "-" + (String)humidityOnline + "-" + (String)pm25Online);
+  display.drawString(26, 3,(String)webBenchmarkTimeStr);
 
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(Meteocons_Plain_21);
@@ -396,12 +398,12 @@ void OLEDDisplayCtl() {
   display.drawString(128, 24, webBenchmarkHTTPCodeStr);
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
   display.setFont(Roboto_10);
-  display.drawString(128, 33, "ms");
+  display.drawString(128, 33, "btc");
 
   // icmp ping
-  display.setTextAlignment(TEXT_ALIGN_LEFT);
-  display.setFont(Roboto_Black_24);
-  display.drawString(0, 20, pingTimeStr);
+  // display.setTextAlignment(TEXT_ALIGN_LEFT);
+  // display.setFont(Roboto_Black_24);
+  // display.drawString(0, 20, pingTimeStr);
 
   // clock
   // display.setTextAlignment(TEXT_ALIGN_LEFT);
@@ -487,56 +489,56 @@ void webBenchmark() {
   unsigned long start =  millis();
   int httpCode = http.GET();
 
-  webBenchmarkStr = (String) (millis() - start - fix);
+  webBenchmarkTimeStr = (String) (millis() - start - fix);
   if(httpCode > 0) {
     webBenchmarkHTTPCodeStr = (String)httpCode;
+    webBenchmarkStr =  (String)http.getString();
   } else {
     webBenchmarkHTTPCodeStr = failString;
     webBenchmarkStr = failString;
   }
 
-
   http.end();
 }
 
-void DHTServerResponse() {
+// void DHTServerResponse() {
   // Check if a client has connected
-  WiFiClient client = DHTServer.available();
-  if (!client) {
-    return;
-  }
-
-  // Wait until the client sends some data
-  Serial.println("new client");
-  unsigned long start = millis();
-
-  while (!client.available()) {
-    delay(1);
-
-    if (millis() - start > 1000) {
-      Serial.println("time out");
-      return;
-    }
-  }
-
-  // Read the first line of the request
-  String req = client.readStringUntil('\r');
-  Serial.println(req);
-  client.flush();
-
-  // Prepare the response
-  String s = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n";
-  s += getSensorsJson();
-  s += "\n";
-
-  // Send the response to the client
-  client.print(s);
-
-  client.flush();
-  client.stop();
-  delay(1);
-  Serial.println("Client disonnected");
-}
+//   WiFiClient client = DHTServer.available();
+//   if (!client) {
+//     return;
+//   }
+//
+//   // Wait until the client sends some data
+//   Serial.println("new client");
+//   unsigned long start = millis();
+//
+//   while (!client.available()) {
+//     delay(1);
+//
+//     if (millis() - start > 1000) {
+//       Serial.println("time out");
+//       return;
+//     }
+//   }
+//
+//   // Read the first line of the request
+//   String req = client.readStringUntil('\r');
+//   Serial.println(req);
+//   client.flush();
+//
+//   // Prepare the response
+//   String s = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n";
+//   s += getSensorsJson();
+//   s += "\n";
+//
+//   // Send the response to the client
+//   client.print(s);
+//
+//   client.flush();
+//   client.stop();
+//   delay(1);
+//   Serial.println("Client disonnected");
+// }
 
 // void weatherUpdate() {
 //   HTTPClient http;
@@ -613,28 +615,28 @@ void DHTServerResponse() {
 //   }
 // }
 
-void DHTSenserPost() {
-  WiFiClient client;
-
-  if (client.connect(nasHost, httpPort)) {
-
-    String jsonStr = getSensorsJson();
-
-    String httpBody = String("POST ") + String(url) + " HTTP/1.1\r\n" +
-                      "Host: " + nasHost + "\r\n" + "Content-Length: " +
-                      jsonStr.length() + "\r\n\r\n" + jsonStr;
-
-    Serial.println("--" + httpBody + "--");
-    client.print(httpBody);
-    delay(10);
-
-    // Read all the lines of the reply from server and print them to Serial
-    while (client.available()) {
-      String line = client.readStringUntil('\r');
-      Serial.print(line);
-    }
-  }
-}
+// void DHTSenserPost() {
+//   WiFiClient client;
+//
+//   if (client.connect(nasHost, httpPort)) {
+//
+//     String jsonStr = getSensorsJson();
+//
+//     String httpBody = String("POST ") + String(url) + " HTTP/1.1\r\n" +
+//                       "Host: " + nasHost + "\r\n" + "Content-Length: " +
+//                       jsonStr.length() + "\r\n\r\n" + jsonStr;
+//
+//     Serial.println("--" + httpBody + "--");
+//     client.print(httpBody);
+//     delay(10);
+//
+//     // Read all the lines of the reply from server and print them to Serial
+//     while (client.available()) {
+//       String line = client.readStringUntil('\r');
+//       Serial.print(line);
+//     }
+//   }
+// }
 
 // send an NTP request to the time server at the given address
 void sendNTPpacket(IPAddress &address) {
@@ -659,26 +661,26 @@ void sendNTPpacket(IPAddress &address) {
 }
 
 // sensors json
-String getSensorsJson() {
-  float h = humidity;
-  float t = temperature;
-  if (isnan(h)) {
-    h = 0.00;
-  }
-  if (isnan(t)) {
-    t = 0.00;
-  }
-
-  String res = "{\"temperature\": ";
-  res += (String)t;
-  res += ",\"humidity\": ";
-  res += (String)h;
-  res += ",\"chip\": \"";
-  res += chipName;
-  res += "\"}";
-
-  return res;
-}
+// String getSensorsJson() {
+//   float h = humidity;
+//   float t = temperature;
+//   if (isnan(h)) {
+//     h = 0.00;
+//   }
+//   if (isnan(t)) {
+//     t = 0.00;
+//   }
+//
+//   String res = "{\"temperature\": ";
+//   res += (String)t;
+//   res += ",\"humidity\": ";
+//   res += (String)h;
+//   res += ",\"chip\": \"";
+//   res += chipName;
+//   res += "\"}";
+//
+//   return res;
+// }
 
 time_t getNtpTime() {
   IPAddress ntpServerIP; // NTP server's ip address
