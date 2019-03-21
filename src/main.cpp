@@ -1,11 +1,12 @@
 #include <ArduinoOTA.h>
-#include <DHT.h>
+//#include <DHT.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
-#include <ESP8266Ping.h>
+// #include <ESP8266Ping.h>
 #include <WiFiClient.h>
 #include <WiFiUdp.h>
-#include "SSD1306Brzo.h"
+//#include "SSD1306Brzo.h"
+#include "SH1106Brzo.h"
 #include "images.h"
 #include <ESP8266HTTPClient.h>
 #include <TimeLib.h>
@@ -30,7 +31,7 @@
 // SSD1306Brzo display(0x3c, D1, D2);
 
 // Chip name
-String chipName = "KAWAII";
+String chipName = "KAWAII231";
 
 // WIFI
 const char *host = chipName.c_str();
@@ -80,7 +81,7 @@ String failString = "ERR";
 // D2 -> SCL
 // SSD1306Brzo display(0x3c, D1, D2);
 // or
-SSD1306Brzo display(0x3c, 0, 2);
+SH1106Brzo display(0x3c, 0, 2);
 // SH1106Wire display2(0x3c, D3, D5);
 //
 // int counter = 1;
@@ -174,7 +175,7 @@ void OLEDDisplayCtl();
 void sendNTPpacket(IPAddress &address);
 // String getSensorsJson();
 time_t getNtpTime();
-void OLEDBlink();
+// void OLEDBlink();
 
 // NTP var
 const int NTP_PACKET_SIZE = 48; // NTP time is in the first 48 bytes of message
@@ -295,28 +296,28 @@ void loop() {
     // delayFlag = false;
   // }
 
-  if(WiFi.isConnected() && (pingTimeStr == failString && webBenchmarkHTTPCodeStr == failString)){
-    OLEDBlink();
-  }
+  // if(WiFi.isConnected() && (pingTimeStr == failString && webBenchmarkHTTPCodeStr == failString)){
+  //   OLEDBlink();
+  // }
 
   if(delayFlag){
     delay(1000);
   }
 }
 
-void OLEDBlink(){
-      display.displayOff();
-      delay(200);
-      display.displayOn();
-      delay(200);
-      display.displayOff();
-      delay(200);
-      display.displayOn();
-      delay(200);
-      display.displayOff();
-      delay(200);
-      display.displayOn();
-}
+// void OLEDBlink(){
+//       display.displayOff();
+//       delay(200);
+//       display.displayOn();
+//       delay(200);
+//       display.displayOff();
+//       delay(200);
+//       display.displayOn();
+//       delay(200);
+//       display.displayOff();
+//       delay(200);
+//       display.displayOn();
+// }
 
 // void OLEDDisplay2Ctl() {
 //   display2.clear();
