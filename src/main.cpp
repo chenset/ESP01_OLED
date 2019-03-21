@@ -63,6 +63,7 @@ void webBenchmark();
 
 
 String webResponseStr = "";
+String webResponseArr[10];
 String getStrValue(String data, char separator, int index);
 
 
@@ -373,7 +374,7 @@ void OLEDDisplayCtl() {
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(Roboto_14);
   // display.drawString(26, 3, (String)temperatureOnline + "-" + (String)humidityOnline + "-" + (String)pm25Online);
-  display.drawString(0, 3,getStrValue(webResponseStr,'\r\n',2));
+  display.drawString(0, 3,webResponseArr[2]);
 
 //  display.setTextAlignment(TEXT_ALIGN_LEFT);
 //  display.setFont(Meteocons_Plain_21);
@@ -382,7 +383,7 @@ void OLEDDisplayCtl() {
   // web benchmarks
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(Roboto_Black_24);
-  display.drawString(0, 20, getStrValue(webResponseStr,'\r\n',3));
+  display.drawString(0, 20,webResponseArr[3]);
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
   display.setFont(Roboto_14);
   display.drawString(128, 27, webBenchmarkTimeStr);
@@ -485,9 +486,11 @@ void webBenchmark() {
 
 //    webBenchmarkHTTPCodeStr = getStrValue((String)http.getString(),'\r\n',2);;
 //    webBenchmarkStr = getStrValue((String)http.getString(),'\r\n',3);
-
-
     webResponseStr = (String)http.getString();
+    webResponseArr[0] = getStrValue(webResponseStr,'\r\n',0);
+    webResponseArr[1] = getStrValue(webResponseStr,'\r\n',1);
+    webResponseArr[2] = getStrValue(webResponseStr,'\r\n',2);
+    webResponseArr[3] = getStrValue(webResponseStr,'\r\n',3);
 
   } else {
       webResponseStr = "";
