@@ -31,7 +31,7 @@
 // SSD1306Brzo display(0x3c, D1, D2);
 
 // Chip name
-String chipName = "KAWAII231";
+String chipName = "SAKURA";
 
 // WIFI
 const char *host = chipName.c_str();
@@ -83,12 +83,12 @@ SH1106Brzo display(0x3c, 0, 2);
 // int counter = 1;
 
 // weather api
-int temperatureOnline = 0;
-int humidityOnline = 0;
-int pm25Online = 0;
+//int temperatureOnline = 0;
+//int humidityOnline = 0;
+//int pm25Online = 0;
 
 // weather img
-int weatherImg = 0; // default 晴
+//int weatherImg = 0; // default 晴
 // img array
 // "晴",
 // "多云",
@@ -123,11 +123,11 @@ int weatherImg = 0; // default 晴
 // "扬沙",
 // "强沙尘暴晴",
 // "霾",
-String weatherImgMapping[] = {
-    "1", "3", "5",  "7",  "7",  "7", "7", "7", "7", "8", "8",
-    "8", "8", "\"", "\"", "\"", "#", "#", "M", "7", "F", "7",
-    "8", "8", "8",  "8",  "\"", "#", "#", "J", "E", "F", "E",
-};
+//String weatherImgMapping[] = {
+//    "1", "3", "5",  "7",  "7",  "7", "7", "7", "7", "8", "8",
+//    "8", "8", "\"", "\"", "\"", "#", "#", "M", "7", "F", "7",
+//    "8", "8", "8",  "8",  "\"", "#", "#", "J", "E", "F", "E",
+//};
 
 String weekDay[] = {
     "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
@@ -367,19 +367,19 @@ void OLEDDisplayCtl() {
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(Roboto_14);
   // display.drawString(26, 3, (String)temperatureOnline + "-" + (String)humidityOnline + "-" + (String)pm25Online);
-  display.drawString(26, 3,(String)webBenchmarkTimeStr);
+  display.drawString(0, 3,(String)webBenchmarkTimeStr);
 
-  display.setTextAlignment(TEXT_ALIGN_LEFT);
-  display.setFont(Meteocons_Plain_21);
-  display.drawString(0, 0, weatherImgMapping[weatherImg]);
+//  display.setTextAlignment(TEXT_ALIGN_LEFT);
+//  display.setFont(Meteocons_Plain_21);
+//  display.drawString(0, 0, weatherImgMapping[weatherImg]);
 
   // web benchmarks
-  display.setTextAlignment(TEXT_ALIGN_RIGHT);
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(Roboto_Black_24);
-  display.drawString(105, 20, webBenchmarkStr);
+  display.drawString(0, 20, webBenchmarkStr);
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
   display.setFont(Roboto_10);
-  display.drawString(128, 24, webBenchmarkHTTPCodeStr);
+  display.drawString(128, 24, webBenchmarkTimeStr);
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
   display.setFont(Roboto_10);
   display.drawString(128, 33, "btc");
@@ -466,8 +466,8 @@ void webBenchmark() {
       http.begin(webBenchmarkUrl, webBenchmarkFingerprint); // HTTPS
       fix = 400;
   }
-  http.setUserAgent("WEB benchmarks from " + chipName);
-  http.addHeader("Accept-Encoding", "gzip, deflate, sdch");
+  http.setUserAgent("ESP-01s " + chipName);
+  //http.addHeader("Accept-Encoding", "gzip, deflate, sdch");
 
   // start connection and send HTTP header
   unsigned long start =  millis();
