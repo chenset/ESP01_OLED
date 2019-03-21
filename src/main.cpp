@@ -56,11 +56,14 @@ const int timeZone = +8;
 //web benchkmark
 const char* webBenchmarkUrl = envWebBenchmarkUrl;
 const char* webBenchmarkFingerprint = envWebBenchmarkFingerprint;
-String webBenchmarkHTTPCodeStr = "-";
-String webBenchmarkStr = "-";
+//String webBenchmarkHTTPCodeStr = "-";
+//String webBenchmarkStr = "-";
 String webBenchmarkTimeStr = "-";
 void webBenchmark();
 
+
+String webResponseStr = "";
+String getStrValue(String data, char separator, int index);
 
 
 //request fail string
@@ -137,6 +140,9 @@ String Months[] = {
     "Jan",  "Feb", "Mar",  "Apr", "May", "June",
     "July", "Aug", "Sept", "Oct", "Nov", "Dec",
 };
+
+
+
 
 // Baud
 const int baud = 115200;
@@ -367,7 +373,7 @@ void OLEDDisplayCtl() {
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(Roboto_14);
   // display.drawString(26, 3, (String)temperatureOnline + "-" + (String)humidityOnline + "-" + (String)pm25Online);
-  display.drawString(0, 3,(String)webBenchmarkTimeStr);
+  display.drawString(0, 3,getStrValue(webResponseStr,'\r\n',2));
 
 //  display.setTextAlignment(TEXT_ALIGN_LEFT);
 //  display.setFont(Meteocons_Plain_21);
@@ -376,13 +382,13 @@ void OLEDDisplayCtl() {
   // web benchmarks
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(Roboto_Black_24);
-  display.drawString(0, 20, webBenchmarkStr);
+  display.drawString(0, 20, getStrValue(webResponseStr,'\r\n',3));
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
-  display.setFont(Roboto_10);
-  display.drawString(128, 24, webBenchmarkTimeStr);
-  display.setTextAlignment(TEXT_ALIGN_RIGHT);
-  display.setFont(Roboto_10);
-  display.drawString(128, 33, "btc");
+  display.setFont(Roboto_14);
+  display.drawString(128, 27, webBenchmarkTimeStr);
+//  display.setTextAlignment(TEXT_ALIGN_RIGHT);
+//  display.setFont(Roboto_10);
+//  display.drawString(128, 33, "btc");
 
   // icmp ping
   // display.setTextAlignment(TEXT_ALIGN_LEFT);
@@ -475,14 +481,38 @@ void webBenchmark() {
 
   webBenchmarkTimeStr = (String) (millis() - start - fix);
   if(httpCode > 0) {
-    webBenchmarkHTTPCodeStr = (String)httpCode;
-    webBenchmarkStr =  (String)http.getString();
+//    webBenchmarkHTTPCodeStr = (String)httpCode;
+
+//    webBenchmarkHTTPCodeStr = getStrValue((String)http.getString(),'\r\n',2);;
+//    webBenchmarkStr = getStrValue((String)http.getString(),'\r\n',3);
+
+
+    webResponseStr = (String)http.getString();
+
   } else {
-    webBenchmarkHTTPCodeStr = failString;
-    webBenchmarkStr = failString;
+      webResponseStr = "";
+//    webBenchmarkHTTPCodeStr = failString;
+//    webBenchmarkStr = failString;
   }
 
   http.end();
+}
+
+String getStrValue(String data, char separator, int index)
+{
+    int found = 0;
+    int strIndex[] = {0, -1};
+    int maxIndex = data.length()-1;
+
+    for(int i=0; i<=maxIndex && found<=index; i++){
+        if(data.charAt(i)==separator || i==maxIndex){
+            found++;
+            strIndex[0] = strIndex[1]+1;
+            strIndex[1] = (i == maxIndex) ? i+1 : i;
+        }
+    }
+
+    return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
 // void DHTServerResponse() {
