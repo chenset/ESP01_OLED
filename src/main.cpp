@@ -61,10 +61,6 @@ String webBenchmarkStr = "-";
 String webBenchmarkTimeStr = "-";
 void webBenchmark();
 
-//icmp ping
-const char* icmpPingDomain = envIcmpPingDomain;
-String pingTimeStr = "-";
-void icmpPing();
 
 
 //request fail string
@@ -290,11 +286,6 @@ void loop() {
     delayFlag = false;
   }
 
-  // if (millis() - timeSinceLastPing >= 5579) {
-    // icmpPing();
-    // timeSinceLastPing = millis();
-    // delayFlag = false;
-  // }
 
   // if(WiFi.isConnected() && (pingTimeStr == failString && webBenchmarkHTTPCodeStr == failString)){
   //   OLEDBlink();
@@ -352,14 +343,6 @@ void loop() {
 //   display2.display();
 // }
 
-// void icmpPing(){
-//       bool ret = Ping.ping(icmpPingDomain, 1);
-//       if(ret){
-//          pingTimeStr = (String)Ping.averageTime();
-//       }else{
-//          pingTimeStr = failString;
-//       }
-// }
 
 void OLEDDisplayCtl() {
 
