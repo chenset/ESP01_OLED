@@ -276,6 +276,12 @@ void loop() {
     ArduinoOTA.handle();
     // DHTServerResponse();
 
+    if(webResponseArr[0] == "0"){
+        display.displayOff();
+    }else{
+        display.displayOn();
+    }
+
     // OLED refresh
     // if (millis() - timeSinceLastClock >= 1000) {
     OLEDDisplayCtl();
@@ -289,7 +295,11 @@ void loop() {
     // delayFlag = false;
     // }
 
-    if (millis() - timeSinceLastWEB >= 12345) {
+    unsigned long requestInterval = webResponseArr[1].toInt();
+    if(requestInterval < 1000){
+        requestInterval = 12345; //default
+    }
+    if (millis() - timeSinceLastWEB >= requestInterval) {
         webBenchmark();
         timeSinceLastWEB = millis();
         delayFlag = false;
@@ -389,7 +399,12 @@ void OLEDDisplayCtl() {
 
     display.setTextAlignment(TEXT_ALIGN_RIGHT);
     display.setFont(Roboto_14);
-    display.drawString(128, 27, webResponseArr[5]);
+
+    if(webResponseArr[5] == ""){
+        display.drawString(128, 27, webBenchmarkTimeStr);
+    }else{
+        display.drawString(128, 27, webResponseArr[5]);
+    }
 //  display.setTextAlignment(TEXT_ALIGN_RIGHT);
 //  display.setFont(Roboto_10);
 //  display.drawString(128, 33, "btc");
