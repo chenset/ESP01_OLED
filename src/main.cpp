@@ -31,7 +31,7 @@
 // SSD1306Brzo display(0x3c, D1, D2);
 
 // Chip name
-String chipName = "SAKURA";
+String chipName = "SAKURA GIRL";
 
 // WIFI
 const char *host = chipName.c_str();
@@ -215,6 +215,7 @@ void setup() {
 
     // connect wifi & OTA init
     WiFi.mode(WIFI_STA);
+    WiFi.hostname(chipName);
     WiFi.begin(ssid, password);
     if (WiFi.waitForConnectResult() == WL_CONNECTED) {
         Serial.println("WiFi Ready");
