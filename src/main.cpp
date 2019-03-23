@@ -281,13 +281,13 @@ void loop() {
         display.displayOff();
     }else{
         display.displayOn();
+        // OLED refresh
+        // if (millis() - timeSinceLastClock >= 1000) {
+        OLEDDisplayCtl();
+        // timeSinceLastClock = millis();
+        // }
     }
 
-    // OLED refresh
-    // if (millis() - timeSinceLastClock >= 1000) {
-    OLEDDisplayCtl();
-    // timeSinceLastClock = millis();
-    // }
 
     // juhe weather API
     // if (millis() - timeSinceLastWeatherAPI >= 3600000) {
