@@ -31,7 +31,7 @@
 // SSD1306Brzo display(0x3c, D1, D2);
 
 // Chip name
-String chipName = "SAKURA GIRL";
+String chipName = "SAKURA_GIRL";
 
 // WIFI
 const char *host = chipName.c_str();
