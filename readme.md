@@ -37,3 +37,8 @@ D1 -> SDA
 D2 -> SCL
 SSD1306Brzo display(0x3c, D1, D2);
 ```
+
+#### WEB
+./web/index.php
+
+env.h 中的配置 envWebApiUrl 为该WEB服务地址
