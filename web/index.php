@@ -1,11 +1,5 @@
 <?php
-
-if(date('G') > 7 && date('G') < 23){
-    echo "1";   // display enable
-}else{
-    echo "0";   // display enable
-}
-
+echo "1";   // display enable
 echo "\r";
 echo "12345"; // request interval
 echo "\r";
