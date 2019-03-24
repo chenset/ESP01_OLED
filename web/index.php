@@ -1,7 +1,7 @@
 <?php
 echo "1";   // display enable
 echo "\r";
-echo "12345"; // request interval
+echo "52345"; // request interval
 echo "\r";
 echo 'Btc';
 echo "\r";
