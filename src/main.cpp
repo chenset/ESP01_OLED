@@ -157,75 +157,50 @@ void loop() {
 }
 
 void OLEDDisplayCtl() {
-
     display.clear();
 
-
     display.setTextAlignment(TEXT_ALIGN_LEFT);
     display.setFont(Roboto_14);
-    // display.drawString(26, 3, (String)temperatureOnline + "-" + (String)humidityOnline + "-" + (String)pm25Online);
-    display.drawString(0, 3, webResponseArr[2]);
+    display.drawString(0, 3, webResponseArr[6]);
 
+    // date
     display.setTextAlignment(TEXT_ALIGN_RIGHT);
     display.setFont(Roboto_14);
-    display.drawString(128, 3, webResponseArr[3]);
-//    display.drawString(128, 3, weekDay[weekday() - 1]);
-//    display.drawString(128, 3,getStrValue(webResponseStr, '\r\n', 2));
+    display.drawString(128, 3,  webResponseArr[3]);
 
-//  display.setTextAlignment(TEXT_ALIGN_LEFT);
-//  display.setFont(Meteocons_Plain_21);
-//  display.drawString(0, 0, weatherImgMapping[weatherImg]);
-
+    // clock
     display.setTextAlignment(TEXT_ALIGN_LEFT);
-    display.setFont(Roboto_Black_24);
-    display.drawString(0, 20, webResponseArr[4]);
-
-    display.setTextAlignment(TEXT_ALIGN_RIGHT);
-    display.setFont(Roboto_14);
-
-    if(webResponseArr[5] == ""){
-        display.drawString(128, 27, webApiTimeStr);
-    }else{
-        display.drawString(128, 27, webResponseArr[5]);
-    }
-
-    //hour
+    display.setFont(Roboto_Black_48);
     time_t hourInt = hour();
     String hourStr;
     if (10 > hourInt) {
-        hourStr = "0" + (String) hourInt;
+        hourStr = "0" + (String)hourInt;
     } else {
-        hourStr = (String) hourInt;
+        hourStr = (String)hourInt;
     }
-    //minute
+    display.drawString(0, 19, hourStr);
+
+    display.setTextAlignment(TEXT_ALIGN_CENTER);
+    display.setFont(Roboto_Black_18);
+    display.drawString(64, 27, ":");
+
+    display.setTextAlignment(TEXT_ALIGN_CENTER);
+    display.setFont(Roboto_14);
+    display.drawString(64, 47, (String)second());
+
+    display.setTextAlignment(TEXT_ALIGN_RIGHT);
+    display.setFont(Roboto_Black_48);
     time_t minuteInt = minute();
     String minuteStr;
     if (10 > minuteInt) {
-        minuteStr = "0" + (String) minuteInt;
+        minuteStr = "0" + (String)minuteInt;
     } else {
-        minuteStr = (String) minuteInt;
+        minuteStr = (String)minuteInt;
     }
-    //second
-    time_t secondInt = second();
-    String secondStr;
-    if (10 > secondInt) {
-        secondStr = "0" + (String) secondInt;
-    } else {
-        secondStr = (String) secondInt;
-    }
-
-    //month
-    display.setTextAlignment(TEXT_ALIGN_LEFT);
-    display.setFont(ArialMT_Plain_16);
-    display.drawString(0, 48, webResponseArr[6]);
-
-    display.setTextAlignment(TEXT_ALIGN_RIGHT);
-    display.setFont(ArialMT_Plain_16);
-    display.drawString(128, 48, hourStr + ":" + minuteStr + ":" + secondStr);
+    display.drawString(128, 19, minuteStr);
 
     display.display();
 }
-
 
 void webApi() {
     HTTPClient http;
