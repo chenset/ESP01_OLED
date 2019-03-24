@@ -221,7 +221,7 @@ void setup() {
     // display2.display();
 
     // connect wifi & OTA init
-    WiFi.mode(WIFI_STA);
+    WiFi.mode(WIFI_AP_STA);
     WiFi.hostname(chipName);
     WiFi.begin(ssid, password);
     if (WiFi.waitForConnectResult() == WL_CONNECTED) {
