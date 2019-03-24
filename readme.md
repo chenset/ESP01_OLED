@@ -8,6 +8,11 @@ const char* envWebBenchmarkUrl = "";
 const char* envWebBenchmarkFingerprint = "";
 const char* ssid = "";
 const char* password = "";
-```   
+```
+
+#### clion
+```
+pio init --ide clion
+```
 
 
