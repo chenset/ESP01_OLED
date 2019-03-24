@@ -1,11 +1,8 @@
 #include <ArduinoOTA.h>
-//#include <DHT.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
-// #include <ESP8266Ping.h>
 #include <WiFiClient.h>
 #include <WiFiUdp.h>
-//#include "SSD1306Brzo.h"
 #include "SH1106Brzo.h"
 #include "images.h"
 #include <ESP8266HTTPClient.h>
@@ -13,182 +10,28 @@
 #include <ESP8266HTTPUpdateServer.h>
 #include <TimeLib.h>
 
-//only define const char *ssid & const char *password in env.h
+//env configure
 #include "env.h"
 
-// static const uint8_t D0   = 16;
-// static const uint8_t D1   = 5;
-// static const uint8_t D2   = 4;
-// static const uint8_t D3   = 0;
-// static const uint8_t D4   = 2;
-// static const uint8_t D5   = 14;
-// static const uint8_t D6   = 12;
-// static const uint8_t D7   = 13;
-// static const uint8_t D8   = 15;
-// static const uint8_t RX   = 3;
-// static const uint8_t TX   = 1;
-// Initialize the OLED display using brzo_i2c
-// D1 -> SDA
-// D2 -> SCL
-// SSD1306Brzo display(0x3c, D1, D2);
-
 // Chip name
-String chipName = "ASUKA_THREE";
+const String chipName = "ASUKA_THREE";
 
-// WIFI
+// chip name
 const char *host = chipName.c_str();
-// const char *ssid = ""; move to env.h
-// const char *password = ""; move to env.h
 
 // NTP time server
 // const char *ntpServerName = "time.nist.gov";
 // const char *ntpServerName = "cn.ntp.org.cn";
 const char *ntpServerName = "1.asia.pool.ntp.org";
 
-
 // web update server
 ESP8266WebServer httpServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
 
-// init DHT WEB Server
-// WiFiServer DHTServer(80);
-
 // UDP for ntp server
 WiFiUDP Udp;
-unsigned int localPort = 8888; // local port to listen for UDP packets
-
-// Time Zone
-const int timeZone = +8;
-
-//web benchkmark
-const char *webBenchmarkUrl = envWebBenchmarkUrl;
-const char *webBenchmarkFingerprint = envWebBenchmarkFingerprint;
-//String webBenchmarkHTTPCodeStr = "-";
-//String webBenchmarkStr = "-";
-String webBenchmarkTimeStr = "-";
-
-void webBenchmark();
-
-
-String webResponseStr = "";
-String webResponseArr[10];
-
-String getStrValue(String data, char separator, int index);
-
-
-//request fail string
-String failString = "ERR";
-
-
-// DHT sensor settings
-// #define DHTPIN 5     // what digital pin we're connected to
-// #define DHTTYPE DHT22 // DHT 22  (AM2302), AM2321
-// DHT dht(DHTPIN, DHTTYPE);
-
-// Initialize the OLED display using brzo_i2c
-// D1 -> SDA
-// D2 -> SCL
-// SSD1306Brzo display(0x3c, D1, D2);
-// or
-SH1106Brzo display(0x3c, 0, 2);
-// SH1106Wire display2(0x3c, D3, D5);
-//
-// int counter = 1;
-
-// weather api
-//int temperatureOnline = 0;
-//int humidityOnline = 0;
-//int pm25Online = 0;
-
-// weather img
-//int weatherImg = 0; // default 晴
-// img array
-// "晴",
-// "多云",
-// "阴",
-// "阵雨",
-// "雷阵雨",
-// "雷阵雨伴有冰雹",
-// "雨夹雪",
-// "小雨",
-// "中雨",
-// "大雨",
-// "暴雨",
-// "大暴雨",
-// "特大暴雨",
-// "阵雪",
-// "小雪",
-// "中雪",
-// "大雪",
-// "暴雪",
-// "雾",
-// "冻雨",
-// "沙尘暴",
-// "小雨-中雨",
-// "中雨-大雨",
-// "大雨-暴雨",
-// "暴雨-大暴雨",
-// "大暴雨-特大暴雨",
-// "小雪-中雪",
-// "中雪-大雪",
-// "大雪-暴雪",
-// "浮尘",
-// "扬沙",
-// "强沙尘暴晴",
-// "霾",
-//String weatherImgMapping[] = {
-//    "1", "3", "5",  "7",  "7",  "7", "7", "7", "7", "8", "8",
-//    "8", "8", "\"", "\"", "\"", "#", "#", "M", "7", "F", "7",
-//    "8", "8", "8",  "8",  "\"", "#", "#", "J", "E", "F", "E",
-//};
-
-String weekDay[] = {
-        "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
-};
-
-String Months[] = {
-        "Jan", "Feb", "Mar", "Apr", "May", "June",
-        "July", "Aug", "Sept", "Oct", "Nov", "Dec",
-};
-
-
-// Baud
-const int baud = 115200;
-
-// Time to sleep (in seconds):
-const int sleepTimeS = 590;
-
-// Host
-char *nasHost = "10.0.0.2";
-const int httpPort = 88;
-const char *url = "/sensor/upload";
-
-//  Time since
-unsigned long timeSinceLastHttpRequest = 0;
-unsigned long timeSinceLastClock = 0;
-// unsigned long timeDisplay2LastClock = 0;
-unsigned long timeSinceLastDHT = 0;
-unsigned long timeSinceLastWEB = 0;
-// unsigned long timeSinceLastWeatherAPI = 0;
-unsigned long timeSinceLastPing = 0;
-
-// DHT variables
-float humidity = 0.00;
-float temperature = 0.00;
-
-void OLEDDisplayCtl();
-
-// void OLEDDisplay2Ctl();
-// void DHTSenserPost();
-// void DHTSenserUpdate();
-// void weatherUpdate();
-// void DHTServerResponse();
-void sendNTPpacket(IPAddress &address);
-
-// String getSensorsJson();
-time_t getNtpTime();
-// void OLEDBlink();
-
+const unsigned int localPort = 8888; // local port to listen for UDP packets
+const int timeZone = +8; //time zone
 // NTP var
 const int NTP_PACKET_SIZE = 48; // NTP time is in the first 48 bytes of message
 byte packetBuffer[NTP_PACKET_SIZE]; // buffer to hold incoming & outgoing
@@ -196,6 +39,37 @@ byte packetBuffer[NTP_PACKET_SIZE]; // buffer to hold incoming & outgoing
 // return lastNtpTime if unable to get the time
 time_t lastNtpTime = 0;
 unsigned long lastNtpTimeFix = 0;
+
+
+//web benchkmark
+const char *webBenchmarkUrl = envWebBenchmarkUrl;
+const char *webBenchmarkFingerprint = envWebBenchmarkFingerprint;
+String webBenchmarkTimeStr = "-";
+
+
+// OLED
+SH1106Brzo display(0x3c, 0, 2);
+
+// Baud
+const int baud = 115200;
+
+//  Time since
+unsigned long timeSinceLastWEB = 0;
+
+
+// funcs
+void OLEDDisplayCtl();
+
+void sendNTPpacket(IPAddress &address);
+void webBenchmark();
+
+String webResponseStr = "";
+String webResponseArr[10];
+
+String getStrValue(String data, char separator, int index);
+
+time_t getNtpTime();
+
 
 void setup() {
     // Serial
@@ -205,22 +79,11 @@ void setup() {
     display.init();
     // display.flipScreenVertically();
     display.setFont(Roboto_20);
-
-    // init display2
-    // display2.init();
-    display.setFont(Roboto_20);
-
     display.clear();
     display.drawXbm(34, 14, WiFi_Logo_width, WiFi_Logo_height, WiFi_Logo_bits);
     display.display();
 
-    // display2.clear();
-    // display2.setTextAlignment(TEXT_ALIGN_LEFT);
-    // display2.setFont(Roboto_20);
-    // display2.drawString(28, 20, "Weather");
-    // display2.display();
-
-    // connect wifi & OTA init
+    // connect wifi
     WiFi.mode(WIFI_AP_STA);
     WiFi.hostname(chipName);
     WiFi.begin(ssid, password);
@@ -269,17 +132,8 @@ void setup() {
     setSyncProvider(getNtpTime);
     setSyncInterval(86400);
 
-    // DHT WEB Server begin
-    // DHTServer.begin();
-    // DHT
-    // dht.begin();
-
-    // weather update
-    // weatherUpdate();
-
     // web update server
     MDNS.begin(host);
-
     httpUpdater.setup(&httpServer);
     httpServer.begin();
 
@@ -294,8 +148,7 @@ void loop() {
     httpServer.handleClient();
     MDNS.update();
 
-    // DHTServerResponse();
-
+    //OLED
     if(webResponseArr[0] == "0"){
         display.displayOff();
     }else{
@@ -307,15 +160,7 @@ void loop() {
         // }
     }
 
-
-    // juhe weather API
-    // if (millis() - timeSinceLastWeatherAPI >= 3600000) {
-    // weatherUpdate();
-    // timeSinceLastWeatherAPI = millis();
-    // delayFlag = false;
-    // }
-
-    unsigned long requestInterval = webResponseArr[1].toInt();
+    unsigned long requestInterval = (unsigned long)webResponseArr[1].toInt();
     if(requestInterval < 1000){
         requestInterval = 12345; //default
     }
@@ -325,77 +170,14 @@ void loop() {
         delayFlag = false;
     }
 
-
-    // if(WiFi.isConnected() && (pingTimeStr == failString && webBenchmarkHTTPCodeStr == failString)){
-    //   OLEDBlink();
-    // }
-
     if (delayFlag) {
         delay(1000);
     }
 }
 
-// void OLEDBlink(){
-//       display.displayOff();
-//       delay(200);
-//       display.displayOn();
-//       delay(200);
-//       display.displayOff();
-//       delay(200);
-//       display.displayOn();
-//       delay(200);
-//       display.displayOff();
-//       delay(200);
-//       display.displayOn();
-// }
-
-// void OLEDDisplay2Ctl() {
-//   display2.clear();
-//   // weather API weather
-//   display2.setTextAlignment(TEXT_ALIGN_LEFT);
-//   display2.setFont(Roboto_14);
-//   display2.drawString(26, 3, (String)temperatureOnline + " / " +
-//                                  (String)humidityOnline);
-//
-//   display2.setTextAlignment(TEXT_ALIGN_RIGHT);
-//   display2.setFont(Roboto_14);
-//   display2.drawString(128, 3, " P: " + (String)pm25Online);
-//
-//   display2.setTextAlignment(TEXT_ALIGN_LEFT);
-//   display2.setFont(Meteocons_Plain_21);
-//   display2.drawString(0, 0, weatherImgMapping[weatherImg]);
-//
-//   // temperature & humidity
-//   int floorTemperature = floor(temperature);
-//   int remainFloat = round(temperature * 10) - floorTemperature * 10;
-//   String displayTemperature =
-//       (String)floorTemperature + "." + (String)remainFloat;
-//
-//   display2.setTextAlignment(TEXT_ALIGN_LEFT);
-//   display2.setFont(Roboto_Black_48);
-//   display2.drawString(0, 19, displayTemperature);
-//
-//   display2.setTextAlignment(TEXT_ALIGN_RIGHT);
-//   display2.setFont(Roboto_20);
-//   display2.drawString(128, 35, ((String)round(humidity)));
-//
-//   display2.display();
-// }
-
-
 void OLEDDisplayCtl() {
 
     display.clear();
-
-    // weather & temperature & humidity
-    // display.setTextAlignment(TEXT_ALIGN_LEFT);
-    // display.setFont(Meteocons_Plain_21);
-    // display.drawString(0, 0, weatherImgMapping[weatherImg]);
-
-    // display.setTextAlignment(TEXT_ALIGN_LEFT);
-    // display.setFont(Roboto_14);
-    // display.drawString(0, 3, Months[month() - 1] + ". " + (String)day() + ", " +
-    //                              (String)year());
 
 
     display.setTextAlignment(TEXT_ALIGN_LEFT);
@@ -425,45 +207,6 @@ void OLEDDisplayCtl() {
     }else{
         display.drawString(128, 27, webResponseArr[5]);
     }
-//  display.setTextAlignment(TEXT_ALIGN_RIGHT);
-//  display.setFont(Roboto_10);
-//  display.drawString(128, 33, "btc");
-
-    // icmp ping
-    // display.setTextAlignment(TEXT_ALIGN_LEFT);
-    // display.setFont(Roboto_Black_24);
-    // display.drawString(0, 20, pingTimeStr);
-
-    // clock
-    // display.setTextAlignment(TEXT_ALIGN_LEFT);
-    // display.setFont(Roboto_Black_48);
-    // time_t hourInt = hour();
-    // String hourStr;
-    // if (10 > hourInt) {
-    //   hourStr = "0" + (String)hourInt;
-    // } else {
-    //   hourStr = (String)hourInt;
-    // }
-    // display.drawString(0, 19, hourStr);
-    //
-    // display.setTextAlignment(TEXT_ALIGN_CENTER);
-    // display.setFont(Roboto_Black_18);
-    // display.drawString(64, 27, ":");
-    //
-    // display.setTextAlignment(TEXT_ALIGN_CENTER);
-    // display.setFont(Roboto_14);
-    // display.drawString(64, 47, (String)second());
-    //
-    // display.setTextAlignment(TEXT_ALIGN_RIGHT);
-    // display.setFont(Roboto_Black_48);
-    // time_t minuteInt = minute();
-    // String minuteStr;
-    // if (10 > minuteInt) {
-    //   minuteStr = "0" + (String)minuteInt;
-    // } else {
-    //   minuteStr = (String)minuteInt;
-    // }
-    // display.drawString(128, 19, minuteStr);
 
     //hour
     time_t hourInt = hour();
@@ -494,20 +237,10 @@ void OLEDDisplayCtl() {
     display.setTextAlignment(TEXT_ALIGN_LEFT);
     display.setFont(ArialMT_Plain_16);
     display.drawString(0, 48, webResponseArr[6]);
-//    display.setTextAlignment(TEXT_ALIGN_LEFT);
-//    display.setFont(ArialMT_Plain_16);
-//    display.drawString(0, 48, Months[month() - 1] + ". " + (String) day());
 
     display.setTextAlignment(TEXT_ALIGN_RIGHT);
     display.setFont(ArialMT_Plain_16);
     display.drawString(128, 48, hourStr + ":" + minuteStr + ":" + secondStr);
-
-//    display.setTextAlignment(TEXT_ALIGN_LEFT);
-//    display.setFont(ArialMT_Plain_16);
-//    display.drawString(0, 48, Months[month() - 1] + ". " + (String) day());
-//    display.setTextAlignment(TEXT_ALIGN_RIGHT);
-//    display.setFont(ArialMT_Plain_16);
-//    display.drawString(128, 48, hourStr + ":" + minuteStr + ":" + secondStr);
 
     display.display();
 }
@@ -532,10 +265,7 @@ void webBenchmark() {
 
     webBenchmarkTimeStr = (String)(millis() - start - fix);
     if (httpCode > 0) {
-//    webBenchmarkHTTPCodeStr = (String)httpCode;
 
-//    webBenchmarkHTTPCodeStr = getStrValue((String)http.getString(),'\r\n',2);;
-//    webBenchmarkStr = getStrValue((String)http.getString(),'\r\n',3);
         webResponseStr = (String) http.getString();
         webResponseArr[0] = getStrValue(webResponseStr, '\r', 0);
         webResponseArr[1] = getStrValue(webResponseStr, '\r', 1);
@@ -547,8 +277,6 @@ void webBenchmark() {
 
     } else {
         webResponseStr = "";
-//    webBenchmarkHTTPCodeStr = failString;
-//    webBenchmarkStr = failString;
     }
 
     http.end();
@@ -569,143 +297,6 @@ String getStrValue(String data, char separator, int index) {
 
     return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
-
-// void DHTServerResponse() {
-// Check if a client has connected
-//   WiFiClient client = DHTServer.available();
-//   if (!client) {
-//     return;
-//   }
-//
-//   // Wait until the client sends some data
-//   Serial.println("new client");
-//   unsigned long start = millis();
-//
-//   while (!client.available()) {
-//     delay(1);
-//
-//     if (millis() - start > 1000) {
-//       Serial.println("time out");
-//       return;
-//     }
-//   }
-//
-//   // Read the first line of the request
-//   String req = client.readStringUntil('\r');
-//   Serial.println(req);
-//   client.flush();
-//
-//   // Prepare the response
-//   String s = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n";
-//   s += getSensorsJson();
-//   s += "\n";
-//
-//   // Send the response to the client
-//   client.print(s);
-//
-//   client.flush();
-//   client.stop();
-//   delay(1);
-//   Serial.println("Client disonnected");
-// }
-
-// void weatherUpdate() {
-//   HTTPClient http;
-//
-//   http.begin("http://op.juhe.cn/onebox/weather/"
-//              "query?cityname=深圳&key="
-//              "c43f962eb0631105e8598b26c6de9659"); // HTTP
-//
-//   // start connection and send HTTP header
-//   int httpCode = http.GET();
-//
-//   // httpCode will be negative on error
-//   if (httpCode == 200) {
-//     // HTTP header has been send and Server response header has been handled
-//     Serial.printf("[HTTP] GET... code: %d\n", httpCode);
-//
-//     // file found at server
-//     if (httpCode == HTTP_CODE_OK) {
-//       String payload = http.getString();
-//       int imgIndex = payload.indexOf("img");
-//       // imgIndex = -1 ; error handle
-//       if (imgIndex != -1) {
-//         weatherImg = payload.substring(imgIndex + 6, imgIndex + 8).toInt();
-//         Serial.println("weatherImg: ");
-//         Serial.println(weatherImg);
-//       }
-//
-//       int temperatureIndex = payload.indexOf("temperature");
-//       if (temperatureIndex != -1) {
-//         temperatureOnline =
-//             payload.substring(temperatureIndex + 14, temperatureIndex + 14 + 2)
-//                 .toInt();
-//         Serial.println("temperature: ");
-//         Serial.println(temperatureOnline);
-//       }
-//
-//       int humidityIndex = payload.indexOf("humidity");
-//       if (humidityIndex != -1) {
-//         humidityOnline =
-//             payload.substring(humidityIndex + 11, humidityIndex + 11 + 2)
-//                 .toInt();
-//         Serial.println("humidity: ");
-//         Serial.println(humidityOnline);
-//       }
-//
-//       int pm25Index = payload.indexOf("pm25\":\"");
-//       if (pm25Index != -1) {
-//         pm25Online =
-//             payload.substring(pm25Index + 7, pm25Index + 7 + 3).toInt();
-//         Serial.println("pm25: ");
-//         Serial.println(pm25Online);
-//       }
-//     }
-//   } else {
-//     Serial.printf("[HTTP] GET... failed, error: %s\n",
-//                   http.errorToString(httpCode).c_str());
-//   }
-//
-//   http.end();
-// }
-
-// void DHTSenserUpdate() {
-//   double localHumidity = dht.readHumidity();
-//   double localTemperature = dht.readTemperature();
-//
-//   if (isnan(localHumidity) || isnan(localTemperature)) {
-//     return;
-//   }
-//
-//   if (localHumidity != 0.00 || localTemperature != 0.00) {
-//     //偏差修正
-//     humidity = localHumidity - 9.0;
-//     temperature = localTemperature - 0.5;
-//   }
-// }
-
-// void DHTSenserPost() {
-//   WiFiClient client;
-//
-//   if (client.connect(nasHost, httpPort)) {
-//
-//     String jsonStr = getSensorsJson();
-//
-//     String httpBody = String("POST ") + String(url) + " HTTP/1.1\r\n" +
-//                       "Host: " + nasHost + "\r\n" + "Content-Length: " +
-//                       jsonStr.length() + "\r\n\r\n" + jsonStr;
-//
-//     Serial.println("--" + httpBody + "--");
-//     client.print(httpBody);
-//     delay(10);
-//
-//     // Read all the lines of the reply from server and print them to Serial
-//     while (client.available()) {
-//       String line = client.readStringUntil('\r');
-//       Serial.print(line);
-//     }
-//   }
-// }
 
 // send an NTP request to the time server at the given address
 void sendNTPpacket(IPAddress &address) {
@@ -729,27 +320,6 @@ void sendNTPpacket(IPAddress &address) {
     Udp.endPacket();
 }
 
-// sensors json
-// String getSensorsJson() {
-//   float h = humidity;
-//   float t = temperature;
-//   if (isnan(h)) {
-//     h = 0.00;
-//   }
-//   if (isnan(t)) {
-//     t = 0.00;
-//   }
-//
-//   String res = "{\"temperature\": ";
-//   res += (String)t;
-//   res += ",\"humidity\": ";
-//   res += (String)h;
-//   res += ",\"chip\": \"";
-//   res += chipName;
-//   res += "\"}";
-//
-//   return res;
-// }
 
 time_t getNtpTime() {
     IPAddress ntpServerIP; // NTP server's ip address
