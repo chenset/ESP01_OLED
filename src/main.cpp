@@ -9,6 +9,8 @@
 #include "SH1106Brzo.h"
 #include "images.h"
 #include <ESP8266HTTPClient.h>
+#include <ESP8266WebServer.h>
+#include <ESP8266HTTPUpdateServer.h>
 #include <TimeLib.h>
 
 //only define const char *ssid & const char *password in env.h
@@ -31,7 +33,7 @@
 // SSD1306Brzo display(0x3c, D1, D2);
 
 // Chip name
-String chipName = "SAKURA_GIRL";
+String chipName = "ASUKA_THREE";
 
 // WIFI
 const char *host = chipName.c_str();
@@ -42,6 +44,11 @@ const char *host = chipName.c_str();
 // const char *ntpServerName = "time.nist.gov";
 // const char *ntpServerName = "cn.ntp.org.cn";
 const char *ntpServerName = "1.asia.pool.ntp.org";
+
+
+// web update server
+ESP8266WebServer httpServer(80);
+ESP8266HTTPUpdateServer httpUpdater;
 
 // init DHT WEB Server
 // WiFiServer DHTServer(80);
@@ -269,12 +276,24 @@ void setup() {
 
     // weather update
     // weatherUpdate();
+
+    // web update server
+    MDNS.begin(host);
+
+    httpUpdater.setup(&httpServer);
+    httpServer.begin();
+
+    MDNS.addService("http", "tcp", 80);
 }
 
 void loop() {
     bool delayFlag = true;
     // OTA
     ArduinoOTA.handle();
+    // web update server
+    httpServer.handleClient();
+    MDNS.update();
+
     // DHTServerResponse();
 
     if(webResponseArr[0] == "0"){
