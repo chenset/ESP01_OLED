@@ -3,9 +3,9 @@
 
 #### env.h  
 
-```   
-const char* envWebBenchmarkUrl = "";
-const char* envWebBenchmarkFingerprint = "";
+```
+const char* envWebApiUrl = "";
+const char* envWebApiFingerprint = "";
 const char* ssid = "";
 const char* password = "";
 ```

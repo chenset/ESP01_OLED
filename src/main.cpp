@@ -1,13 +1,10 @@
 #include <ArduinoOTA.h>
 #include <ESP8266WiFi.h>
-#include <ESP8266mDNS.h>
 #include <WiFiClient.h>
 #include <WiFiUdp.h>
 #include "SH1106Brzo.h"
 #include "images.h"
 #include <ESP8266HTTPClient.h>
-#include <ESP8266WebServer.h>
-#include <ESP8266HTTPUpdateServer.h>
 #include <TimeLib.h>
 
 //env configure
@@ -16,17 +13,11 @@
 // Chip name
 const String chipName = "ASUKA_THREE";
 
-// chip name
-const char *host = chipName.c_str();
 
 // NTP time server
 // const char *ntpServerName = "time.nist.gov";
 // const char *ntpServerName = "cn.ntp.org.cn";
 const char *ntpServerName = "1.asia.pool.ntp.org";
-
-// web update server
-ESP8266WebServer httpServer(80);
-ESP8266HTTPUpdateServer httpUpdater;
 
 // UDP for ntp server
 WiFiUDP Udp;
@@ -42,9 +33,9 @@ unsigned long lastNtpTimeFix = 0;
 
 
 //web benchkmark
-const char *webBenchmarkUrl = envWebBenchmarkUrl;
-const char *webBenchmarkFingerprint = envWebBenchmarkFingerprint;
-String webBenchmarkTimeStr = "-";
+const char *webApiUrl = envWebApiUrl;
+const char *webApiFingerprint = envWebApiFingerprint;
+String webApiTimeStr = "-";
 
 
 // OLED
@@ -61,7 +52,7 @@ unsigned long timeSinceLastWEB = 0;
 void OLEDDisplayCtl();
 
 void sendNTPpacket(IPAddress &address);
-void webBenchmark();
+void webApi();
 
 String webResponseStr = "";
 String webResponseArr[10];
@@ -84,7 +75,7 @@ void setup() {
     display.display();
 
     // connect wifi
-    WiFi.mode(WIFI_AP_STA);
+    WiFi.mode(WIFI_STA);
     WiFi.hostname(chipName);
     WiFi.begin(ssid, password);
     if (WiFi.waitForConnectResult() == WL_CONNECTED) {
@@ -131,22 +122,12 @@ void setup() {
     // Serial.println("waiting for sync");
     setSyncProvider(getNtpTime);
     setSyncInterval(86400);
-
-    // web update server
-    MDNS.begin(host);
-    httpUpdater.setup(&httpServer);
-    httpServer.begin();
-
-    MDNS.addService("http", "tcp", 80);
 }
 
 void loop() {
     bool delayFlag = true;
     // OTA
     ArduinoOTA.handle();
-    // web update server
-    httpServer.handleClient();
-    MDNS.update();
 
     //OLED
     if(webResponseArr[0] == "0"){
@@ -165,7 +146,7 @@ void loop() {
         requestInterval = 12345; //default
     }
     if (millis() - timeSinceLastWEB >= requestInterval) {
-        webBenchmark();
+        webApi();
         timeSinceLastWEB = millis();
         delayFlag = false;
     }
@@ -203,7 +184,7 @@ void OLEDDisplayCtl() {
     display.setFont(Roboto_14);
 
     if(webResponseArr[5] == ""){
-        display.drawString(128, 27, webBenchmarkTimeStr);
+        display.drawString(128, 27, webApiTimeStr);
     }else{
         display.drawString(128, 27, webResponseArr[5]);
     }
@@ -246,14 +227,14 @@ void OLEDDisplayCtl() {
 }
 
 
-void webBenchmark() {
+void webApi() {
     HTTPClient http;
     int fix;
-    if (webBenchmarkFingerprint == "") {
-        http.begin(webBenchmarkUrl); // HTTP
+    if (webApiFingerprint == "") {
+        http.begin(webApiUrl); // HTTP
         fix = 0;
     } else {
-        http.begin(webBenchmarkUrl, webBenchmarkFingerprint); // HTTPS
+        http.begin(webApiUrl, webApiFingerprint); // HTTPS
         fix = 400;
     }
     http.setUserAgent("ESP-01s " + chipName);
@@ -263,7 +244,7 @@ void webBenchmark() {
     unsigned long start = millis();
     int httpCode = http.GET();
 
-    webBenchmarkTimeStr = (String)(millis() - start - fix);
+    webApiTimeStr = (String)(millis() - start - fix);
     if (httpCode > 0) {
 
         webResponseStr = (String) http.getString();
