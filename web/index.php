@@ -7,8 +7,7 @@ if(date('G') > 7 && date('G') < 23){
 }
 
 echo "\r";
-//echo "12345"; // request interval
-echo "3345"; // request interval
+echo "12345"; // request interval
 echo "\r";
 echo 'Btc';
 echo "\r";
