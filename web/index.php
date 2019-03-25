@@ -9,7 +9,7 @@ if(date('G') > 7 && date('G') < 23){
 echo "\r";
 echo "12345"; // request interval
 echo "\r";
-echo 'Btc';
+echo (round(json_decode(@file_get_contents('/dev/shm/weather.json'), true)['temp'] ?? 0, 1)).'/'.(round(json_decode(@file_get_contents('/dev/shm/juhe_weather.json'), true)['result']['data']['realtime']['weather']['humidity'] ?? 0, 0));
 echo "\r";
 echo date('l');
 echo "\r";
@@ -18,3 +18,5 @@ echo "\r";
 echo "";
 echo "\r";
 echo date('M.d');
+echo "\r";
+echo (round(json_decode(@file_get_contents('/dev/shm/juhe_weather.json'), true)['result']['data']['realtime']['weather']['img'] ?? 0, 0));
