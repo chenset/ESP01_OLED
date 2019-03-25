@@ -211,24 +211,24 @@ void OLEDDisplayCtl() {
     }
     display.drawString(0, 0, weatherImgMapping[iconIndex]);
 
-    // 彩云 temp api
+    // temp api
     display.setTextAlignment(TEXT_ALIGN_LEFT);
     display.setFont(Roboto_14);
-    display.drawString(24, 3, webResponseArr[6]);
+    display.drawString(23, 3, webResponseArr[6]);
 
     // juhe temp api
-    display.setTextAlignment(TEXT_ALIGN_LEFT);
-    display.setFont(Roboto_14);
-    display.drawString(42, 3, webResponseArr[3]);
+//    display.setTextAlignment(TEXT_ALIGN_LEFT);
+//    display.setFont(Roboto_14);
+//    display.drawString(42, 3, webResponseArr[3]);
+//
+//    display.setTextAlignment(TEXT_ALIGN_LEFT);
+//    display.setFont(Roboto_14);
+//    display.drawString(70, 3, webResponseArr[4]);
 
-    display.setTextAlignment(TEXT_ALIGN_LEFT);
-    display.setFont(Roboto_14);
-    display.drawString(70, 3, webResponseArr[4]);
-
-    // date
+    // DHT api
     display.setTextAlignment(TEXT_ALIGN_RIGHT);
     display.setFont(Roboto_14);
-    display.drawString(128, 3, webResponseArr[3]);
+    display.drawString(128, 3, webResponseArr[2]);
 
     // clock
     display.setTextAlignment(TEXT_ALIGN_LEFT);
