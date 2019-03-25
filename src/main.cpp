@@ -32,7 +32,7 @@ time_t lastNtpTime = 0;
 unsigned long lastNtpTimeFix = 0;
 
 
-//web benchkmark
+//web api
 const char *webApiUrl = envWebApiUrl;
 const char *webApiFingerprint = envWebApiFingerprint;
 String webApiTimeStr = "-";
@@ -60,6 +60,49 @@ String webResponseArr[10];
 String getStrValue(String data, char separator, int index);
 
 time_t getNtpTime();
+
+
+// weather img
+int weatherImg = 0; // default 晴
+// img array
+// "晴",
+// "多云",
+// "阴",
+// "阵雨",
+// "雷阵雨",
+// "雷阵雨伴有冰雹",
+// "雨夹雪",
+// "小雨",
+// "中雨",
+// "大雨",
+// "暴雨",
+// "大暴雨",
+// "特大暴雨",
+// "阵雪",
+// "小雪",
+// "中雪",
+// "大雪",
+// "暴雪",
+// "雾",
+// "冻雨",
+// "沙尘暴",
+// "小雨-中雨",
+// "中雨-大雨",
+// "大雨-暴雨",
+// "暴雨-大暴雨",
+// "大暴雨-特大暴雨",
+// "小雪-中雪",
+// "中雪-大雪",
+// "大雪-暴雪",
+// "浮尘",
+// "扬沙",
+// "强沙尘暴晴",
+// "霾",
+const String weatherImgMapping[] = {
+        "1", "3", "5",  "7",  "7",  "7", "7", "7", "7", "8", "8",
+        "8", "8", "\"", "\"", "\"", "#", "#", "M", "7", "F", "7",
+        "8", "8", "8",  "8",  "\"", "#", "#", "J", "E", "F", "E",
+};
 
 
 void setup() {
@@ -159,9 +202,15 @@ void loop() {
 void OLEDDisplayCtl() {
     display.clear();
 
+    // weather icon
+    display.setTextAlignment(TEXT_ALIGN_LEFT);
+    display.setFont(Meteocons_Plain_21);
+    display.drawString(0, 0, weatherImgMapping[weatherImg]);
+
+    // temp api
     display.setTextAlignment(TEXT_ALIGN_LEFT);
     display.setFont(Roboto_14);
-    display.drawString(0, 3, webResponseArr[6]);
+    display.drawString(24, 3, webResponseArr[6]);
 
     // date
     display.setTextAlignment(TEXT_ALIGN_RIGHT);
