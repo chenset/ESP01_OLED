@@ -205,12 +205,21 @@ void OLEDDisplayCtl() {
     // weather icon
     display.setTextAlignment(TEXT_ALIGN_LEFT);
     display.setFont(Meteocons_Plain_21);
-    display.drawString(0, 0, weatherImgMapping[weatherImg]);
+    display.drawString(0, 0, weatherImgMapping[webResponseArr[5].toInt()]);
 
-    // temp api
+    // 彩云 temp api
     display.setTextAlignment(TEXT_ALIGN_LEFT);
     display.setFont(Roboto_14);
     display.drawString(24, 3, webResponseArr[6]);
+
+    // juhe temp api
+    display.setTextAlignment(TEXT_ALIGN_LEFT);
+    display.setFont(Roboto_14);
+    display.drawString(42, 3, webResponseArr[3]);
+
+    display.setTextAlignment(TEXT_ALIGN_LEFT);
+    display.setFont(Roboto_14);
+    display.drawString(70, 3, webResponseArr[4]);
 
     // date
     display.setTextAlignment(TEXT_ALIGN_RIGHT);
