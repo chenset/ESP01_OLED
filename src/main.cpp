@@ -52,6 +52,7 @@ unsigned long timeSinceLastWEB = 0;
 void OLEDDisplayCtl();
 
 void sendNTPpacket(IPAddress &address);
+
 void webApi();
 
 String webResponseStr = "";
@@ -63,7 +64,6 @@ time_t getNtpTime();
 
 
 // weather img
-int weatherImg = 0; // default 晴
 // img array
 // "晴",
 // "多云",
@@ -99,9 +99,9 @@ int weatherImg = 0; // default 晴
 // "强沙尘暴晴",
 // "霾",
 const String weatherImgMapping[] = {
-        "1", "3", "5",  "7",  "7",  "7", "7", "7", "7", "8", "8",
+        "1", "3", "5", "7", "7", "7", "7", "7", "7", "8", "8",
         "8", "8", "\"", "\"", "\"", "#", "#", "M", "7", "F", "7",
-        "8", "8", "8",  "8",  "\"", "#", "#", "J", "E", "F", "E",
+        "8", "8", "8", "8", "\"", "#", "#", "J", "E", "F", "E",
 };
 
 
@@ -173,9 +173,9 @@ void loop() {
     ArduinoOTA.handle();
 
     //OLED
-    if(webResponseArr[0] == "0"){
+    if (webResponseArr[0] == "0") {
         display.displayOff();
-    }else{
+    } else {
         display.displayOn();
         // OLED refresh
         // if (millis() - timeSinceLastClock >= 1000) {
@@ -184,8 +184,8 @@ void loop() {
         // }
     }
 
-    unsigned long requestInterval = (unsigned long)webResponseArr[1].toInt();
-    if(requestInterval < 1000){
+    unsigned long requestInterval = (unsigned long) webResponseArr[1].toInt();
+    if (requestInterval < 1000) {
         requestInterval = 12345; //default
     }
     if (millis() - timeSinceLastWEB >= requestInterval) {
@@ -205,7 +205,11 @@ void OLEDDisplayCtl() {
     // weather icon
     display.setTextAlignment(TEXT_ALIGN_LEFT);
     display.setFont(Meteocons_Plain_21);
-    display.drawString(0, 0, weatherImgMapping[webResponseArr[5].toInt()]);
+    int iconIndex = webResponseArr[5].toInt();
+    if (iconIndex > 30 || iconIndex < 0) {
+        iconIndex = 0;
+    }
+    display.drawString(0, 0, weatherImgMapping[iconIndex]);
 
     // 彩云 temp api
     display.setTextAlignment(TEXT_ALIGN_LEFT);
@@ -224,7 +228,7 @@ void OLEDDisplayCtl() {
     // date
     display.setTextAlignment(TEXT_ALIGN_RIGHT);
     display.setFont(Roboto_14);
-    display.drawString(128, 3,  webResponseArr[3]);
+    display.drawString(128, 3, webResponseArr[3]);
 
     // clock
     display.setTextAlignment(TEXT_ALIGN_LEFT);
@@ -232,9 +236,9 @@ void OLEDDisplayCtl() {
     time_t hourInt = hour();
     String hourStr;
     if (10 > hourInt) {
-        hourStr = "0" + (String)hourInt;
+        hourStr = "0" + (String) hourInt;
     } else {
-        hourStr = (String)hourInt;
+        hourStr = (String) hourInt;
     }
     display.drawString(0, 19, hourStr);
 
@@ -244,16 +248,16 @@ void OLEDDisplayCtl() {
 
     display.setTextAlignment(TEXT_ALIGN_CENTER);
     display.setFont(Roboto_14);
-    display.drawString(64, 47, (String)second());
+    display.drawString(64, 47, (String) second());
 
     display.setTextAlignment(TEXT_ALIGN_RIGHT);
     display.setFont(Roboto_Black_48);
     time_t minuteInt = minute();
     String minuteStr;
     if (10 > minuteInt) {
-        minuteStr = "0" + (String)minuteInt;
+        minuteStr = "0" + (String) minuteInt;
     } else {
-        minuteStr = (String)minuteInt;
+        minuteStr = (String) minuteInt;
     }
     display.drawString(128, 19, minuteStr);
 
@@ -277,7 +281,7 @@ void webApi() {
     unsigned long start = millis();
     int httpCode = http.GET();
 
-    webApiTimeStr = (String)(millis() - start - fix);
+    webApiTimeStr = (String) (millis() - start - fix);
     if (httpCode > 0) {
 
         webResponseStr = (String) http.getString();
