@@ -1,6 +1,6 @@
 <?php
 
-if(date('G') > 7 && date('G') < 23){
+if(date('G') > 7 && date('G') < 20){
     echo "1";   // display enable
 }else{
     echo "0";   // display enable
