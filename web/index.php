@@ -31,7 +31,7 @@ echo "1";   // display enable
 echo "\r";
 echo "52345"; // request interval
 echo "\r";
-echo round(getTemperature($json),1).'/'.round(getHumidity($json));
+echo round(getTemperature($json),1);
 echo "\r";
 echo "";
 echo "\r";
