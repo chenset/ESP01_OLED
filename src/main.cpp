@@ -17,7 +17,8 @@ const String chipName = "ASUKA_THREE";
 // NTP time server
 // const char *ntpServerName = "time.nist.gov";
 // const char *ntpServerName = "cn.ntp.org.cn";
-const char *ntpServerName = "1.asia.pool.ntp.org";
+//const char *ntpServerName = "1.asia.pool.ntp.org";
+const char *ntpServerName = "time.pool.aliyun.com";
 
 // UDP for ntp server
 WiFiUDP Udp;
