@@ -63,6 +63,7 @@ String getStrValue(String data, char separator, int index);
 
 time_t getNtpTime();
 
+int getCaiYunWeatherIcon(const String &code);
 
 // weather img
 // img array
@@ -206,11 +207,11 @@ void OLEDDisplayCtl() {
     // weather icon
     display.setTextAlignment(TEXT_ALIGN_LEFT);
     display.setFont(Meteocons_Plain_21);
-    int iconIndex = webResponseArr[5].toInt();
-    if (iconIndex > 30 || iconIndex < 0) {
-        iconIndex = 0;
-    }
-    display.drawString(0, 0, weatherImgMapping[iconIndex]);
+//    int iconIndex = webResponseArr[5].toInt();
+//    if (iconIndex > 30 || iconIndex < 0) {
+//        iconIndex = 0;
+//    }
+    display.drawString(0, 0, weatherImgMapping[getCaiYunWeatherIcon(webResponseArr[5])]);
 
     // temp api
     display.setTextAlignment(TEXT_ALIGN_LEFT);
@@ -371,4 +372,47 @@ time_t getNtpTime() {
     Serial.println("No NTP Response :-(");
     return lastNtpTime + ((int) (millis() - lastNtpTimeFix) /
                           1000); // return lastNtpTime if unable to get the time
+}
+
+int getCaiYunWeatherIcon(const String &code) {
+//https://open.caiyunapp.com/%E5%AE%9E%E5%86%B5%E5%A4%A9%E6%B0%94%E6%8E%A5%E5%8F%A3/v2.2
+//天气现象	代码
+//晴（白天）	CLEAR_DAY
+//晴（夜间）	CLEAR_NIGHT
+//多云（白天）	PARTLY_CLOUDY_DAY
+//多云（夜间）	PARTLY_CLOUDY_NIGHT
+//阴	CLOUDY
+//大风	WIND
+//雾霾	HAZE
+//雨	RAIN
+//雪	SNOW
+    if (code == "CLEAR_DAY") {
+        return 0;
+    }
+    if (code == "CLEAR_NIGHT") {
+        return 0;
+    }
+    if (code == "PARTLY_CLOUDY_DAY") {
+        return 1;
+    }
+    if (code == "PARTLY_CLOUDY_NIGHT") {
+        return 1;
+    }
+    if (code == "CLOUDY") {
+        return 2;
+    }
+    if (code == "WIND") {
+        return 30;
+    }
+    if (code == "HAZE") {
+        return 32;
+    }
+    if (code == "RAIN") {
+        return 8;
+    }
+    if (code == "SNOW") {
+        return 15;
+    }
+
+    return 0;
 }
