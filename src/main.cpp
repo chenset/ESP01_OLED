@@ -204,19 +204,37 @@ void loop() {
 void OLEDDisplayCtl() {
     display.clear();
 
-    // weather icon
+
+//    display.setTextAlignment(TEXT_ALIGN_RIGHT);
+//    display.setFont(ArialMT_Plain_16);
+//    display.drawString(128, 48, hourStr + ":" + minuteStr + ":" + secondStr);
+
+
+
+    // YMD
     display.setTextAlignment(TEXT_ALIGN_LEFT);
-    display.setFont(Meteocons_Plain_21);
+    display.setFont(ArialMT_Plain_16);
+    display.drawString(0, 0, webResponseArr[3]);
+
+    // week
+    display.setTextAlignment(TEXT_ALIGN_RIGHT);
+    display.setFont(ArialMT_Plain_16);
+    display.drawString(128, 0, webResponseArr[4]);
+
+
+    // weather icon
+//    display.setTextAlignment(TEXT_ALIGN_LEFT);
+//    display.setFont(Meteocons_Plain_21);
 //    int iconIndex = webResponseArr[5].toInt();
 //    if (iconIndex > 30 || iconIndex < 0) {
 //        iconIndex = 0;
 //    }
-    display.drawString(0, 0, weatherImgMapping[getCaiYunWeatherIcon(webResponseArr[5])]);
+//    display.drawString(0, 0, weatherImgMapping[getCaiYunWeatherIcon(webResponseArr[5])]);
 
     // temp api
-    display.setTextAlignment(TEXT_ALIGN_LEFT);
-    display.setFont(Roboto_14);
-    display.drawString(23, 3, webResponseArr[6]);
+//    display.setTextAlignment(TEXT_ALIGN_LEFT);
+//    display.setFont(Roboto_14);
+//    display.drawString(23, 3, webResponseArr[6]);
 
     // juhe temp api
 //    display.setTextAlignment(TEXT_ALIGN_LEFT);
@@ -227,10 +245,6 @@ void OLEDDisplayCtl() {
 //    display.setFont(Roboto_14);
 //    display.drawString(70, 3, webResponseArr[4]);
 
-    // DHT api
-    display.setTextAlignment(TEXT_ALIGN_RIGHT);
-    display.setFont(Roboto_14);
-    display.drawString(128, 3, webResponseArr[2]);
 
     // clock
     display.setTextAlignment(TEXT_ALIGN_LEFT);
