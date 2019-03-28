@@ -11,7 +11,7 @@
 #include "env.h"
 
 // Chip name
-const String chipName = "ESP01_CLOCK";
+const String chipName = "time_station_down";
 
 
 // NTP time server
