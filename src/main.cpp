@@ -11,7 +11,7 @@
 #include "env.h"
 
 // Chip name
-const String chipName = "time_station_down";
+const String chipName = "time_station_clock";
 
 
 // NTP time server
@@ -36,7 +36,6 @@ unsigned long lastNtpTimeFix = 0;
 //web api
 const char *webApiUrl = envWebApiUrl;
 const char *webApiFingerprint = envWebApiFingerprint;
-String webApiTimeStr = "-";
 
 
 // OLED
