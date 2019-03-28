@@ -11,7 +11,7 @@
 #include "env.h"
 
 // Chip name
-const String chipName = "ASUKA_THREE";
+const String chipName = "time_station_weather";
 
 
 // NTP time server

@@ -1,11 +1,30 @@
 <?php
+$json = json_decode(@file_get_contents('/dev/shm/home_weather.json'),true);
 
-if(date('G') > 7 && date('G') < 19){
-    echo "1";   // display enable
-}else{
-    echo "0";   // display enable
+function getTemperature($json){
+        if(!$json){
+            return '0';
+        }
+        foreach ($json as $item){
+            if($item['name'] === 'portable_temperature'){
+                return ($item['temperature'][count($item['temperature'])-1]??0);
+            }
+        }
+        return '0';
+}
+function getHumidity($json){
+        if(!$json){
+            return '0';
+        }
+        foreach ($json as $item){
+            if($item['name'] === 'portable_humidity'){
+                return ($item['humidity'][count($item['humidity'])-1]??0);
+            }
+        }
+        return '0';
 }
 
+echo "1";
 echo "\r";
 echo "12345"; // request interval
 echo "\r";
@@ -13,7 +32,7 @@ echo (round(json_decode(@file_get_contents('/dev/shm/caiyun_realtime_weather.jso
 echo "\r";
 echo date('D');
 echo "\r";
-echo (round(json_decode(@file_get_contents('/dev/shm/coin.json'), true)['last'] ?? 0, 2));
+echo round(getTemperature($json),1);
 echo "\r";
 echo "";
 echo "\r";
