@@ -36,6 +36,7 @@ unsigned long lastNtpTimeFix = 0;
 //web api
 const char *webApiUrl = envWebApiUrl;
 const char *webApiFingerprint = envWebApiFingerprint;
+//String webApiTimeStr = "-";
 
 
 // OLED
@@ -282,7 +283,7 @@ void webApi() {
     unsigned long start = millis();
     int httpCode = http.GET();
 
-    webApiTimeStr = (String) (millis() - start - fix);
+//    webApiTimeStr = (String) (millis() - start - fix);
     if (httpCode > 0) {
 
         webResponseStr = (String) http.getString();
