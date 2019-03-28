@@ -210,7 +210,7 @@ void OLEDDisplayCtl() {
     display.drawString(0, 0, weatherImgMapping[getCaiYunWeatherIcon(webResponseArr[7])]);
 
     display.setTextAlignment(TEXT_ALIGN_LEFT);
-    display.setFont(Roboto_14);
+    display.setFont(ArialMT_Plain_16);
     display.drawString(23, 3, webResponseArr[2]);
 
     display.setTextAlignment(TEXT_ALIGN_RIGHT);
