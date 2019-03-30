@@ -26,8 +26,13 @@ function getHumidity($json){
         return '0';
 }
 
-
-echo "1";   // display enable
+if($_GET['off'] != 1){ 
+        echo "1";   // display enable
+}elseif(date('G') > 7 && date('G') < 19){
+        echo "1";   // display enable
+}else{
+        echo "0";   // display enable
+}
 echo "\r";
 echo "52345"; // request interval
 echo "\r";
