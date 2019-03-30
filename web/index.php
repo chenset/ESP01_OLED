@@ -1,6 +1,8 @@
 <?php
 
-if(date('G') > 7 && date('G') < 19){
+if($_GET['off'] != 1){
+    echo "1";
+}elseif(date('G') > 7 && date('G') < 19){
     echo "1";   // display enable
 }else{
     echo "0";   // display enable
