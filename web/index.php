@@ -20,7 +20,7 @@ $exchange = json_decode(@file_get_contents('/dev/shm/juhe_exchangerates.json'), 
 //echo $exchange> 0 ? round(1/$exchange*100,3):0;
 echo round($exchange/100,3);
 echo "\r";
-echo (round(json_decode(@file_get_contents('/dev/shm/coin.json'), true)['last'] ?? 0, 2));
+echo (round(json_decode(@file_get_contents('/dev/shm/coin.json'), true)['last'] ?? 0, 1));
 echo "\r";
 //$exchange = json_decode(@file_get_contents('/dev/shm/exchangeratesapi.json'), true)['rates']['HKD'] ?? 0; 
 //echo $exchange> 0 ? round(1/$exchange*10,2):0;
