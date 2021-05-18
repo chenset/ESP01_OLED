@@ -298,7 +298,7 @@ void webApi() {
     int httpCode = http.GET();
 
 //    webApiTimeStr = (String) (millis() - start - fix);
-    if (httpCode > 0) {
+    if (httpCode == 200) {
 
         webResponseStr = (String) http.getString();
         webResponseArr[0] = getStrValue(webResponseStr, '\r', 0);
