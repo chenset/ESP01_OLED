@@ -28,7 +28,7 @@ function getHumidity($json){
 
 if($_GET['off'] != 1){ 
         echo "1";   // display enable
-}elseif(date('G') > 8 && date('G') < 21){
+}elseif(date('Gi') > 855 && date('G') < 21){
         echo "1";   // display enable
 }else{
         echo "0";   // display enable
