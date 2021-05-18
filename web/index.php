@@ -6,7 +6,7 @@ function getTemperature($json){
             return '0';
         }
         foreach ($json as $item){
-            if($item['name'] === 'portable_temperature'){
+            if($item['name'] === 'bedroom_temperature'){
                 return ($item['temperature'][count($item['temperature'])-1]??0);
             }
         }
@@ -17,7 +17,7 @@ function getHumidity($json){
             return '0';
         }
         foreach ($json as $item){
-            if($item['name'] === 'portable_humidity'){
+            if($item['name'] === 'bedroom_humidity'){
                 return ($item['humidity'][count($item['humidity'])-1]??0);
             }
         }
