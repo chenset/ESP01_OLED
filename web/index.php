@@ -29,4 +29,6 @@ $exchange = json_decode(@file_get_contents('/dev/shm/juhe_exchangerates.json'), 
 echo round(100/$exchange,3);
 echo "\r";
 echo json_decode(@file_get_contents('/dev/shm/caiyun_realtime_weather.json'), true)['result']['skycon'] ?? 0; 
+echo "\r";
+echo time();
 
