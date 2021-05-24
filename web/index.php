@@ -39,3 +39,5 @@ echo "\r";
 echo 'C: '.(round(json_decode(@file_get_contents('/dev/shm/caiyun_realtime_weather.json'), true)['result']['cloudrate'] ?? 0,2)*100);
 echo "\r";
 echo json_decode(@file_get_contents('/dev/shm/caiyun_realtime_weather.json'), true)['result']['skycon'] ?? 0;
+echo "\r";
+echo time();
