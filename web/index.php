@@ -2,7 +2,7 @@
 
 if($_GET['off'] != 1){
     echo "1";
-}elseif(date('Gi') > 855 && date('G') < 21){
+}elseif(date('Gi') > 855 && date('G') < 22){
     echo "1";   // display enable
 }else{
     echo "0";   // display disable
