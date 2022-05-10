@@ -198,7 +198,7 @@ void loop() {
     }
 
     //try to sync time when if not synced
-    if (now() < 100000000) {
+    if (timeNeedsSync == timeStatus()) {
         trySyncTime();
     }
 
