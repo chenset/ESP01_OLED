@@ -57,8 +57,8 @@ void sendNTPpacket(IPAddress &address);
 void webApi();
 
 String webResponseStr = "";
-String webResponseArr[10];
-
+String webResponseArr[16];
+void trySyncTime();
 String getStrValue(String data, char separator, int index);
 
 time_t getNtpTime();
@@ -196,8 +196,21 @@ void loop() {
         delayFlag = false;
     }
 
+    //try to sync time when if not synced
+    if (now() < 100000000) {
+        trySyncTime();
+    }
+
     if (delayFlag) {
         delay(1000);
+    }
+}
+
+void trySyncTime() {
+    long timestamp = (long)webResponseArr[8].toInt();
+    if(timestamp > 100000000){
+        //manual change timezone 8*3600  +8 TZ
+        setTime(timestamp+8*3600);
     }
 }
 
@@ -308,6 +321,7 @@ void webApi() {
         webResponseArr[5] = getStrValue(webResponseStr, '\r', 5);
         webResponseArr[6] = getStrValue(webResponseStr, '\r', 6);
         webResponseArr[7] = getStrValue(webResponseStr, '\r', 7);
+        webResponseArr[8] = getStrValue(webResponseStr, '\r', 8);
 
     } else {
         webResponseStr = "";
