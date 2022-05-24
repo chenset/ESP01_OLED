@@ -18,7 +18,7 @@ echo "\r";
 #$exchange = json_decode(@file_get_contents('/dev/shm/juhe_exchangerates.json'), true)['result'][0]['data1']['bankConversionPri'] ?? 0; 
 #echo round(10000/$exchange,3);
 $sina = explode(',', trim(@file_get_contents('/dev/shm/sina_stock.js')??''));
-echo  isset($sina[8]) ?( round($sina[8] ?? 0, 3)."/".round((($sina[6] ?? 0)/2.706-1)*100, 2)  ):0;
+echo  isset($sina[8]) ?( round($sina[8] ?? 0, 1)."/".round((($sina[6] ?? 0)/2.706-1)*100, 1)  ):0;
 echo "\r";
 $sina = explode(',', trim(@file_get_contents('/dev/shm/sina_stock.js')??''));
 echo round($sina[1] ?? 0, 1);
