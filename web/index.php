@@ -8,17 +8,24 @@ if($_GET['off'] != 1){
     echo "0";   // display disable
 }
 
+$sina = explode(',', trim(@file_get_contents('/dev/shm/sina_stock.js')??''));
+
+$SH50ETF_earn = empty($sina[6]) ? 0: ( ($sina[6]-2.706)*37000 + ($sina[6]-2.739)*10900 +  ($sina[6]-2.716)*25700 - 67.08 );
+
+$SH50ETF_amount = 69801.2 + 100182 + 29862.11;
+
+
 echo "\r";
 echo "12345"; // request interval
 echo "\r";
 #echo (round(json_decode(@file_get_contents('/dev/shm/caiyun_realtime_weather.json'), true)['result']['temperature'] ?? 0, 1)).'/'.(round((json_decode(@file_get_contents('/dev/shm/caiyun_realtime_weather.json'), true)['result']['humidity'] ?? 0)*100, 0));
-$sina = explode(',', trim(@file_get_contents('/dev/shm/sina_stock.js')??''));
 echo round($sina[6] ?? 0, 3);
 echo "\r";
 #$exchange = json_decode(@file_get_contents('/dev/shm/juhe_exchangerates.json'), true)['result'][0]['data1']['bankConversionPri'] ?? 0; 
 #echo round(10000/$exchange,3);
 $sina = explode(',', trim(@file_get_contents('/dev/shm/sina_stock.js')??''));
-echo  isset($sina[8]) ?( round($sina[8] ?? 0, 1)."/".round((($sina[6] ?? 0)/2.706-1)*100, 1)  ):0;
+#echo  isset($sina[8]) ?( round($sina[8] ?? 0, 1)."/".round((($sina[6] ?? 0)/2.706-1)*100, 1)  ):0;
+echo  isset($sina[8]) ?( round($sina[8] ?? 0, 1)."/".round(    $SH50ETF_earn/$SH50ETF_amount*100   , 1)  ):0;
 echo "\r";
 $sina = explode(',', trim(@file_get_contents('/dev/shm/sina_stock.js')??''));
 echo round($sina[1] ?? 0, 1);
@@ -34,7 +41,7 @@ echo "\r";
 #$sina = explode(',', trim(@file_get_contents('/dev/shm/sina_stock.js')??''));
 #echo round($sina[6] ?? 0, 3);
 #echo (round(json_decode(@file_get_contents('/dev/shm/caiyun_realtime_weather.json'), true)['result']['temperature'] ?? 0, 1)).'/'.(round((json_decode(@file_get_contents('/dev/shm/caiyun_realtime_weather.json'), true)['result']['humidity'] ?? 0)*100, 0));
-echo empty($sina[6]) ? "-": round(($sina[6]-2.706)*37000 + ($sina[6]-2.739)*10900 - 67.08,0);
+echo empty($sina[6]) ? "-": round($SH50ETF_earn,2);
 echo "\r";
 echo json_decode(@file_get_contents('/dev/shm/caiyun_realtime_weather.json'), true)['result']['skycon'] ?? 0; 
 echo "\r";
