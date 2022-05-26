@@ -10,9 +10,9 @@ if($_GET['off'] != 1){
 
 $sina = explode(',', trim(@file_get_contents('/dev/shm/sina_stock.js')??''));
 
-$SH50ETF_earn = empty($sina[6]) ? 0: ( ($sina[6]-2.706)*37000 + ($sina[6]-2.739)*10900 +  ($sina[6]-2.716)*25700 - 67.08 );
+$SH50ETF_earn = empty($sina[6]) ? 0: ( ($sina[6]-2.706)*37000 + ($sina[6]-2.739)*10900 +  ($sina[6]-2.716)*25700 - (41.88+60.07+17.91) );
 
-$SH50ETF_amount = 69801.2 + 100182 + 29862.11;
+$SH50ETF_amount = 69843.08 - 41.88 + 100182.07 - 60.07 + 29862.11 - 17.91;
 
 
 echo "\r";
