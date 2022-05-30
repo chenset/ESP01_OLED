@@ -5,7 +5,6 @@
 
 ```
 const char* envWebApiUrl = "";
-const char* envWebApiFingerprint = "";  // 非 ssl 留空
 const char* ssid = "";
 const char* password = "";
 ```
