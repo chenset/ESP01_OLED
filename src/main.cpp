@@ -35,7 +35,7 @@ unsigned long lastNtpTimeFix = 0;
 
 //web benchkmark
 const char *webApiUrl = envWebApiUrl;
-const char *webApiFingerprint = envWebApiFingerprint;
+// const char *webApiFingerprint = envWebApiFingerprint;
 String webApiTimeStr = "-";
 
 
@@ -297,13 +297,13 @@ void OLEDDisplayCtl() {
 void webApi() {
     HTTPClient http;
     int fix;
-    if (webApiFingerprint == "") {
+    // if (webApiFingerprint == "") {
         http.begin(webApiUrl); // HTTP
         fix = 0;
-    } else {
-        http.begin(webApiUrl, webApiFingerprint); // HTTPS
-        fix = 400;
-    }
+    // } else {
+        // http.begin(webApiUrl, webApiFingerprint); // HTTPS
+        // fix = 400;
+    // }
     http.setUserAgent("ESP-01s " + chipName);
     //http.addHeader("Accept-Encoding", "gzip, deflate, sdch");
 
