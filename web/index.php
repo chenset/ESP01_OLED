@@ -10,7 +10,7 @@ if($_GET['off'] != 1){
 
 $sina = explode(',', trim(@file_get_contents('/dev/shm/sina_stock.js')??''));
 
-$SH50ETF_earn = empty($sina[6]) ? 0: ( ($sina[6]-2.706)*37000 + ($sina[6]-2.739)*10900 +  ($sina[6]-2.716)*25700 - (41.88+60.07+17.91) );
+$SH50ETF_earn = empty($sina[6]) ? 0: ( ($sina[6]-2.706)*37000 + ($sina[6]-2.739)*10900 + ($sina[6]-2.716)*25700 - (41.88+60.07+17.91) + 10.9 );
 
 $SH50ETF_amount = 69843.08 - 41.88 + 100182.07 - 60.07 + 29862.11 - 17.91;
 
@@ -41,7 +41,7 @@ echo "\r";
 #$sina = explode(',', trim(@file_get_contents('/dev/shm/sina_stock.js')??''));
 #echo round($sina[6] ?? 0, 3);
 #echo (round(json_decode(@file_get_contents('/dev/shm/caiyun_realtime_weather.json'), true)['result']['temperature'] ?? 0, 1)).'/'.(round((json_decode(@file_get_contents('/dev/shm/caiyun_realtime_weather.json'), true)['result']['humidity'] ?? 0)*100, 0));
-echo empty($sina[6]) ? "-": round($SH50ETF_earn,1);
+echo empty($sina[6]) ? "-": round($SH50ETF_earn,3);
 echo "\r";
 echo json_decode(@file_get_contents('/dev/shm/caiyun_realtime_weather.json'), true)['result']['skycon'] ?? 0; 
 echo "\r";
