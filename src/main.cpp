@@ -13,6 +13,8 @@
 // Chip name
 const String chipName = "ASUKA_THREE";
 
+//wifi client
+WiFiClient wifiClient;
 
 // NTP time server
 // const char *ntpServerName = "time.nist.gov";
@@ -293,12 +295,11 @@ void OLEDDisplayCtl() {
     display.display();
 }
 
-
 void webApi() {
     HTTPClient http;
     int fix;
     // if (webApiFingerprint == "") {
-        http.begin(webApiUrl); // HTTP
+        http.begin(wifiClient, webApiUrl); // HTTP
         fix = 0;
     // } else {
         // http.begin(webApiUrl, webApiFingerprint); // HTTPS
