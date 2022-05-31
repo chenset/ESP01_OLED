@@ -13,6 +13,7 @@
 // Chip name
 const String chipName = "time_station_clock";
 
+WiFiClient wifiClient;
 
 // NTP time server
 // const char *ntpServerName = "time.nist.gov";
@@ -35,7 +36,6 @@ unsigned long lastNtpTimeFix = 0;
 
 //web api
 const char *webApiUrl = envWebApiUrl;
-const char *webApiFingerprint = envWebApiFingerprint;
 //String webApiTimeStr = "-";
 
 
@@ -296,19 +296,12 @@ void OLEDDisplayCtl() {
 
 void webApi() {
     HTTPClient http;
-    int fix;
-    if (webApiFingerprint == "") {
-        http.begin(webApiUrl); // HTTP
-        fix = 0;
-    } else {
-        http.begin(webApiUrl, webApiFingerprint); // HTTPS
-        fix = 400;
-    }
+    http.begin(wifiClient,webApiUrl); // HTTP
     http.setUserAgent("ESP-01s " + chipName);
     //http.addHeader("Accept-Encoding", "gzip, deflate, sdch");
 
     // start connection and send HTTP header
-    unsigned long start = millis();
+    //unsigned long start = millis();
     int httpCode = http.GET();
 
 //    webApiTimeStr = (String) (millis() - start - fix);
