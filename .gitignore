@@ -10,3 +10,4 @@
 cmake-build-debug
 CMakeListsPrivate.txt
 .pio
+get-platformio.py
