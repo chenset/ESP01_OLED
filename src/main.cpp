@@ -13,6 +13,7 @@
 // Chip name
 const String chipName = "ASUKA_THREE";
 
+WiFiClient wifiClient;
 
 // NTP time server
 // const char *ntpServerName = "time.nist.gov";
@@ -114,15 +115,16 @@ void setup() {
     // init display
     display.init();
     // display.flipScreenVertically();
-    display.setFont(Roboto_20);
+    //display.setFont((const uint8_t *)Roboto_20);
+    display.setFont(ArialMT_Plain_10);
     display.clear();
-    display.drawXbm(34, 14, WiFi_Logo_width, WiFi_Logo_height, WiFi_Logo_bits);
+    display.drawXbm(34, 14, WiFi_Logo_width, WiFi_Logo_height, (const uint8_t*)WiFi_Logo_bits);
     display.display();
 
     // connect wifi
     WiFi.mode(WIFI_STA);
     WiFi.hostname(chipName);
-    WiFi.begin(ssid, password);
+    WiFi.begin((const char*)ssid, (const char*)password);
     if (WiFi.waitForConnectResult() == WL_CONNECTED) {
         Serial.println("WiFi Ready");
     } else {
@@ -156,7 +158,7 @@ void setup() {
     // Print the IP address
     display.clear();
     display.setTextAlignment(TEXT_ALIGN_CENTER_BOTH);
-    display.setFont(ArialMT_Plain_16);
+    display.setFont((const uint8_t *)ArialMT_Plain_16);
     display.drawString(64, 32, WiFi.localIP().toString());
     display.display();
     delay(500);
@@ -219,7 +221,8 @@ void OLEDDisplayCtl() {
 
     // weather icon
     display.setTextAlignment(TEXT_ALIGN_LEFT);
-    display.setFont(Meteocons_Plain_21);
+    // display.setFont((const uint8_t *)Meteocons_Plain_21);
+    display.setFont(ArialMT_Plain_10);
 //    int iconIndex = webResponseArr[7].toInt();
 //    if (iconIndex > 30 || iconIndex < 0) {
 //        iconIndex = 0;
@@ -227,12 +230,14 @@ void OLEDDisplayCtl() {
     display.drawString(0, 0, weatherImgMapping[getCaiYunWeatherIcon(webResponseArr[7])]);
 
     display.setTextAlignment(TEXT_ALIGN_LEFT);
-    display.setFont(Roboto_14);
+    // display.setFont((const uint8_t *)Roboto_14);
+    display.setFont(ArialMT_Plain_10);
     // display.drawString(26, 3, (String)temperatureOnline + "-" + (String)humidityOnline + "-" + (String)pm25Online);
     display.drawString(23, 3, webResponseArr[2]);
 
     display.setTextAlignment(TEXT_ALIGN_RIGHT);
-    display.setFont(Roboto_14);
+    // display.setFont((const uint8_t *)Roboto_14);
+    display.setFont(ArialMT_Plain_10);
     display.drawString(128, 3, webResponseArr[3]);
 //    display.drawString(128, 3, weekDay[weekday() - 1]);
 //    display.drawString(128, 3,getStrValue(webResponseStr, '\r\n', 2));
@@ -242,11 +247,13 @@ void OLEDDisplayCtl() {
 //  display.drawString(0, 0, weatherImgMapping[weatherImg]);
 
     display.setTextAlignment(TEXT_ALIGN_LEFT);
-    display.setFont(Roboto_Black_24);
+    // display.setFont((const uint8_t *)Roboto_Black_24);
+    display.setFont(ArialMT_Plain_10);
     display.drawString(0, 20, webResponseArr[4]);
 
     display.setTextAlignment(TEXT_ALIGN_RIGHT);
-    display.setFont(Roboto_14);
+    // display.setFont((const uint8_t *)Roboto_14);
+    display.setFont(ArialMT_Plain_10);
 
     if (webResponseArr[5] == "") {
         display.drawString(128, 27, webApiTimeStr);
@@ -281,11 +288,11 @@ void OLEDDisplayCtl() {
 
     //month
     display.setTextAlignment(TEXT_ALIGN_LEFT);
-    display.setFont(ArialMT_Plain_16);
+    display.setFont((const uint8_t *)ArialMT_Plain_16);
     display.drawString(0, 48, webResponseArr[6]);
 
     display.setTextAlignment(TEXT_ALIGN_RIGHT);
-    display.setFont(ArialMT_Plain_16);
+    display.setFont((const uint8_t *)ArialMT_Plain_16);
     display.drawString(128, 48, hourStr + ":" + minuteStr + ":" + secondStr);
 
     display.display();
@@ -294,14 +301,14 @@ void OLEDDisplayCtl() {
 
 void webApi() {
     HTTPClient http;
-    int fix;
-    if (webApiFingerprint == "") {
-        http.begin(webApiUrl); // HTTP
-        fix = 0;
-    } else {
-        http.begin(webApiUrl, webApiFingerprint); // HTTPS
-        fix = 400;
-    }
+    // int fix;
+    // if ( strcmp ((const char*)webApiFingerprint,"") == 0) {
+        http.begin(wifiClient,webApiUrl); // HTTP
+        // fix = 0;
+    // } else {
+        // http.begin(wifiClient, webApiUrl, (const uint8_t*)webApiFingerprint); // HTTPS
+        // fix = 400;
+    // }
     http.setUserAgent("ESP-01s " + chipName);
     //http.addHeader("Accept-Encoding", "gzip, deflate, sdch");
 
@@ -309,7 +316,7 @@ void webApi() {
     unsigned long start = millis();
     int httpCode = http.GET();
 
-    webApiTimeStr = (String) (millis() - start - fix);
+    webApiTimeStr = (String) (millis() - start);
     if (httpCode == 200) {
 
         webResponseStr = (String) http.getString();

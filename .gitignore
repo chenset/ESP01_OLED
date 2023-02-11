@@ -9,3 +9,4 @@
 .vscode
 cmake-build-debug
 CMakeListsPrivate.txt
+.pio

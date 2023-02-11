@@ -1,8 +1,8 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 by Daniel Eichhorn
- * Copyright (c) 2016 by Fabrice Weinberg
+ * Copyright (c) 2018 by ThingPulse, Daniel Eichhorn
+ * Copyright (c) 2018 by Fabrice Weinberg
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * Credits for parts of this code go to Mike Rankin. Thank you so much for sharing!
+ * ThingPulse invests considerable time and money to develop these open source libraries.
+ * Please support us by buying our products (and not the clones) from
+ * https://thingpulse.com
+ *
  */
 
 #ifndef SSD1306Spi_h
@@ -44,7 +47,10 @@ class SSD1306Spi : public OLEDDisplay {
       uint8_t             _cs;
 
   public:
-    SSD1306Spi(uint8_t _rst, uint8_t _dc, uint8_t _cs) {
+    /* pass _cs as -1 to indicate "do not use CS pin", for cases where it is hard wired low */
+    SSD1306Spi(uint8_t _rst, uint8_t _dc, uint8_t _cs, OLEDDISPLAY_GEOMETRY g = GEOMETRY_128_64) {
+        setGeometry(g);
+
       this->_rst = _rst;
       this->_dc  = _dc;
       this->_cs  = _cs;
@@ -52,7 +58,9 @@ class SSD1306Spi : public OLEDDisplay {
 
     bool connect(){
       pinMode(_dc, OUTPUT);
-      pinMode(_cs, OUTPUT);
+      if (_cs != (uint8_t) -1) {
+        pinMode(_cs, OUTPUT);
+      }  
       pinMode(_rst, OUTPUT);
 
       SPI.begin ();
@@ -69,19 +77,19 @@ class SSD1306Spi : public OLEDDisplay {
 
     void display(void) {
     #ifdef OLEDDISPLAY_DOUBLE_BUFFER
-       uint8_t minBoundY = ~0;
+       uint8_t minBoundY = UINT8_MAX;
        uint8_t maxBoundY = 0;
 
-       uint8_t minBoundX = ~0;
+       uint8_t minBoundX = UINT8_MAX;
        uint8_t maxBoundX = 0;
 
        uint8_t x, y;
 
        // Calculate the Y bounding box of changes
        // and copy buffer[pos] to buffer_back[pos];
-       for (y = 0; y < (DISPLAY_HEIGHT / 8); y++) {
-         for (x = 0; x < DISPLAY_WIDTH; x++) {
-          uint16_t pos = x + y * DISPLAY_WIDTH;
+       for (y = 0; y < (displayHeight / 8); y++) {
+         for (x = 0; x < displayWidth; x++) {
+          uint16_t pos = x + y * displayWidth;
           if (buffer[pos] != buffer_back[pos]) {
             minBoundY = _min(minBoundY, y);
             maxBoundY = _max(maxBoundY, y);
@@ -96,7 +104,7 @@ class SSD1306Spi : public OLEDDisplay {
        // If the minBoundY wasn't updated
        // we can savely assume that buffer_back[pos] == buffer[pos]
        // holdes true for all values of pos
-       if (minBoundY == ~0) return;
+       if (minBoundY == UINT8_MAX) return;
 
        sendCommand(COLUMNADDR);
        sendCommand(minBoundX);
@@ -106,16 +114,16 @@ class SSD1306Spi : public OLEDDisplay {
        sendCommand(minBoundY);
        sendCommand(maxBoundY);
 
-       digitalWrite(_cs, HIGH);
+       set_CS(HIGH);
        digitalWrite(_dc, HIGH);   // data mode
-       digitalWrite(_cs, LOW);
+       set_CS(LOW);
        for (y = minBoundY; y <= maxBoundY; y++) {
          for (x = minBoundX; x <= maxBoundX; x++) {
-           SPI.transfer(buffer[x + y * DISPLAY_WIDTH]);
+           SPI.transfer(buffer[x + y * displayWidth]);
          }
          yield();
        }
-       digitalWrite(_cs, HIGH);
+       set_CS(HIGH);
      #else
        // No double buffering
        sendCommand(COLUMNADDR);
@@ -124,26 +132,39 @@ class SSD1306Spi : public OLEDDisplay {
 
        sendCommand(PAGEADDR);
        sendCommand(0x0);
-       sendCommand(0x7);
 
-        digitalWrite(_cs, HIGH);
+       if (geometry == GEOMETRY_128_64 || geometry == GEOMETRY_64_48 || geometry == GEOMETRY_64_32 ) {
+         sendCommand(0x7);
+       } else if (geometry == GEOMETRY_128_32) {
+         sendCommand(0x3);
+       }
+
+        set_CS(HIGH);
         digitalWrite(_dc, HIGH);   // data mode
-        digitalWrite(_cs, LOW);
-        for (uint16_t i=0; i<DISPLAY_BUFFER_SIZE; i++) {
+        set_CS(LOW);
+        for (uint16_t i=0; i<displayBufferSize; i++) {
           SPI.transfer(buffer[i]);
           yield();
         }
-        digitalWrite(_cs, HIGH);
+        set_CS(HIGH);
      #endif
     }
 
   private:
+	int getBufferOffset(void) {
+		return 0;
+	}
+    inline void set_CS(bool level) {
+      if (_cs != (uint8_t) -1) {
+        digitalWrite(_cs, level);
+      }
+    };
     inline void sendCommand(uint8_t com) __attribute__((always_inline)){
-      digitalWrite(_cs, HIGH);
+      set_CS(HIGH);
       digitalWrite(_dc, LOW);
-      digitalWrite(_cs, LOW);
+      set_CS(LOW);
       SPI.transfer(com);
-      digitalWrite(_cs, HIGH);
+      set_CS(HIGH);
     }
 };
 
