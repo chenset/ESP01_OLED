@@ -1,0 +1,26 @@
+#include <ESP8266WiFi.h>
+#include <ESP8266mDNS.h>
+#include <WiFiUdp.h>
+#include <ArduinoOTA.h>
+
+char ssid[] = "xxxxxxxxxxxxx"; //WiFI user id
+char pass[] = "xxxxxxxxxxxxx"; //WiFi password
+
+#define OTA_Host_Name "ESP01S-EMPTY-OTA"
+
+void setup() {
+WiFi.mode(WIFI_STA);
+WiFi.begin(ssid, pass);
+
+while (WiFi.waitForConnectResult() != WL_CONNECTED) {
+delay(5000);
+ESP.restart();
+}
+
+ArduinoOTA.setHostname(OTA_Host_Name);
+ArduinoOTA.begin();
+}
+
+void loop() {
+ArduinoOTA.handle();
+}
