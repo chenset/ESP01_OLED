@@ -281,7 +281,8 @@ void OLEDDisplayCtl() {
     display.drawString(64, 27, ":");
 
     display.setTextAlignment(TEXT_ALIGN_CENTER);
-    display.setFont(Roboto_14);
+    // display.setFont(Roboto_14);
+    display.setFont(ArialMT_Plain_10);
     // display.setFont(ArialMT_Plain_24);
     display.drawString(64, 47, (String) second());
 
