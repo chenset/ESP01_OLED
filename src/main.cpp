@@ -264,7 +264,7 @@ void OLEDDisplayCtl() {
     // clock
     display.setTextAlignment(TEXT_ALIGN_LEFT);
     //display.setFont(Roboto_Black_41);
-    display.setFont(Dialog_bold_48);
+    display.setFont(Roboto_Black_41);
     // display.setFont(ArialMT_Plain_24);
     time_t hourInt = hour();
     String hourStr;
@@ -287,7 +287,7 @@ void OLEDDisplayCtl() {
 
     display.setTextAlignment(TEXT_ALIGN_RIGHT);
     //display.setFont(Roboto_Black_41);
-    display.setFont(Dialog_bold_48);
+    display.setFont(Roboto_Black_41);
     // display.setFont(ArialMT_Plain_24);
     time_t minuteInt = minute();
     String minuteStr;
