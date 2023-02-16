@@ -3119,7 +3119,7 @@ const uint8_t Roboto_Black_41[] PROGMEM = {
 
 // Created by http://oleddisplay.squix.ch/ Consider a donation
 // In case of problems make sure that you are using the font file with the correct version!
-const char Dialog_bold_48[] PROGMEM = {
+const uint8_t Dialog_bold_48[] PROGMEM = {
 	0x35, // Width: 53
 	0x39, // Height: 57
 	0x20, // First Char: 32
